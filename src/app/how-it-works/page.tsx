@@ -123,12 +123,12 @@ export default function HowItWorksPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div className="text-center mb-16" {...fadeInUp}>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-emerald-200 bg-clip-text text-transparent">
-            How It Works
+          <h1 className="text-5xl md:text-6xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-teal-300 bg-clip-text text-transparent tracking-wider">
+            HOW IT WORKS
           </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-400 max-w-3xl mx-auto">
             Ergo Frontier enables secure peer-to-peer ERG trading using smart contracts 
-            and decentralized verification. Here's how the magic happens.
+            and the Verification Network. Here's how the frontier works.
           </p>
         </motion.div>
 

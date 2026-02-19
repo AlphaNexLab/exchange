@@ -9,14 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-electric-500 text-white hover:bg-electric-600 glow-electric shadow-lg hover:shadow-electric-500/25",
+        default: "bg-amber-500 text-space-900 hover:bg-amber-600 glow-frontier shadow-lg hover:shadow-amber-500/25 font-bold",
         destructive: "bg-red-500 text-white hover:bg-red-600 shadow-lg",
-        outline: "border-2 border-electric-500/60 text-electric-400 hover:bg-electric-500 hover:text-white hover:border-electric-500 backdrop-blur-sm",
+        outline: "border-2 border-teal-500/60 text-teal-400 hover:bg-teal-500 hover:text-white hover:border-teal-500 backdrop-blur-sm",
         secondary: "bg-space-700 border border-slate-600/50 text-slate-300 hover:bg-space-600 hover:text-white hover:border-slate-500",
         ghost: "text-slate-400 hover:bg-space-800/50 hover:text-white",
         emerald: "bg-emerald-500 text-white hover:bg-emerald-600 glow-emerald shadow-lg",
-        amber: "bg-amber-500 text-space-900 hover:bg-amber-600 glow-amber shadow-lg font-bold",
-        invite: "bg-electric-500 text-white hover:bg-electric-600 animate-wallet-invite shadow-2xl",
+        amber: "bg-amber-500 text-space-900 hover:bg-amber-600 glow-frontier shadow-lg font-bold",
+        invite: "bg-amber-500 text-space-900 hover:bg-amber-600 animate-wallet-invite shadow-2xl font-bold",
       },
       size: {
         default: "h-12 px-6 py-3 text-sm",

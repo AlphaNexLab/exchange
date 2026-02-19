@@ -63,11 +63,11 @@ export function Navigation({}: NavigationProps = {}) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-electric-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-electric-500/30 transition-all duration-300">
-                <span className="text-white font-bold text-sm">EF</span>
+              <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-copper-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
+                <span className="text-space-900 font-bold text-sm">★</span>
               </div>
-              <span className="text-xl font-bold text-slate-50 tracking-tight group-hover:text-electric-300 transition-colors">
-                Ergo Frontier
+              <span className="text-xl font-frontier font-bold text-slate-50 tracking-wider group-hover:text-amber-300 transition-colors">
+                ERGO FRONTIER
               </span>
             </Link>
 
@@ -83,8 +83,8 @@ export function Navigation({}: NavigationProps = {}) {
                     className={cn(
                       "flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300",
                       isActive
-                        ? "text-electric-300 bg-electric-500/10 border border-electric-500/20 glow-electric"
-                        : "text-slate-300 hover:text-white hover:bg-space-700/50 border border-transparent"
+                        ? "text-amber-300 bg-amber-500/10 border border-amber-500/20 glow-frontier"
+                        : "text-slate-300 hover:text-white hover:bg-space-700/50 hover:text-amber-300 border border-transparent"
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -210,8 +210,8 @@ export function Navigation({}: NavigationProps = {}) {
                     className={cn(
                       "flex flex-col items-center space-y-1 p-2 rounded-lg text-xs font-medium transition-all",
                       isActive
-                        ? "text-electric-300 bg-electric-500/10"
-                        : "text-slate-400 hover:text-white"
+                        ? "text-amber-300 bg-amber-500/10"
+                        : "text-slate-400 hover:text-amber-300"
                     )}
                   >
                     <Icon className="w-4 h-4" />

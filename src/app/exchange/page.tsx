@@ -79,7 +79,7 @@ export default function ExchangePage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="hover:border-blue-500/50 transition-all duration-300 group cursor-pointer">
+      <Card className="hover:border-amber-500/50 transition-all duration-300 group cursor-pointer glow-frontier">
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start">
             <div>
@@ -128,7 +128,7 @@ export default function ExchangePage() {
           
           <Link href={`/trade/${offer.id}`}>
             <Button 
-              className="w-full group-hover:glow-electric transition-all"
+              className="w-full group-hover:glow-frontier transition-all font-bold"
               disabled={!wallet.connected}
             >
               {wallet.connected ? 'Buy ERG' : 'Connect Wallet to Trade'}

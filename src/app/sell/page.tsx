@@ -86,10 +86,10 @@ export default function SellPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div className="text-center mb-12" {...fadeInUp}>
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
-            Sell Your ERG
+          <h1 className="text-5xl font-frontier font-bold mb-4 bg-gradient-to-r from-slate-50 to-amber-300 bg-clip-text text-transparent tracking-wider">
+            SELL YOUR ERG
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             List your ERG for sale and earn from direct peer-to-peer trades secured by smart contracts
           </p>
         </motion.div>

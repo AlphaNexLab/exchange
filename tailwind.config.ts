@@ -9,43 +9,63 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Deep space navy background system
+        // Deep warm frontier background system
         space: {
-          900: '#0a0e1a',
-          800: '#0f1420',
-          700: '#141926',
-          600: '#1a1f2e',
-          500: '#202535'
+          900: '#0d0a07',
+          800: '#1a1510',
+          700: '#2a2318',
+          600: '#3a3028',
+          500: '#4a4038'
         },
-        // Electric blue system
+        // Warm amber/gold primary accent - lantern light, gold dust
         electric: {
-          500: '#3b82f6',
-          400: '#60a5fa',
-          600: '#2563eb',
-          300: '#93c5fd'
+          500: '#d4a052',
+          400: '#c4882a',
+          600: '#b8793a',
+          300: '#e4b062'
         },
-        // Warm amber/gold system  
+        // Copper/rust secondary - weathered metal
+        copper: {
+          500: '#b87333',
+          400: '#8b4513',
+          600: '#9f6329',
+          300: '#c8843d'
+        },
+        // Electric teal highlight - futuristic holographic tech
+        teal: {
+          500: '#2dd4bf',
+          400: '#4dd0c7',
+          600: '#1db5a1',
+          300: '#5de0d5'
+        },
+        // Warm amber/gold system (primary)
         amber: {
-          500: '#f59e0b',
-          400: '#fbbf24',
-          600: '#d97706',
-          300: '#fcd34d'
+          500: '#d4a052',
+          400: '#c4882a',
+          600: '#b8793a',
+          300: '#e4b062'
         },
-        // Success emerald
+        // Success - warm green
         emerald: {
-          500: '#10b981',
-          400: '#34d399',
-          600: '#059669'
+          500: '#22c55e',
+          400: '#4ade80',
+          600: '#16a34a'
         },
-        // Text system
+        // Danger - deep red
+        red: {
+          500: '#dc2626',
+          400: '#ef4444',
+          600: '#b91c1c'
+        },
+        // Warm frontier text system
         slate: {
-          50: '#f8fafc',
-          400: '#94a3b8',
-          300: '#cbd5e1',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b'
+          50: '#faf5ef',  // warm white
+          400: '#a39685',  // warm gray secondary
+          300: '#b5a799',
+          500: '#8a7969',
+          600: '#6b5d4f',
+          700: '#4c3f35',
+          800: '#2d241c'
         }
       },
       backgroundImage: {
@@ -81,8 +101,8 @@ const config: Config = {
           '100%': { opacity: '1', transform: 'scale(1)' }
         },
         glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)' },
-          '50%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3)' }
+          '0%, 100%': { boxShadow: '0 0 20px rgba(212, 160, 82, 0.4)' },
+          '50%': { boxShadow: '0 0 40px rgba(212, 160, 82, 0.6), 0 0 60px rgba(212, 160, 82, 0.3)' }
         },
         meshShift: {
           '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
@@ -95,9 +115,9 @@ const config: Config = {
           '50%': { transform: 'scale(1.05)', opacity: '0.8' }
         },
         judgeVerify: {
-          '0%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.7)' },
-          '70%': { transform: 'scale(1.1)', boxShadow: '0 0 0 10px rgba(16, 185, 129, 0)' },
-          '100%': { transform: 'scale(1)', boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)' }
+          '0%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(212, 160, 82, 0.7)' },
+          '70%': { transform: 'scale(1.1)', boxShadow: '0 0 0 10px rgba(212, 160, 82, 0)' },
+          '100%': { transform: 'scale(1)', boxShadow: '0 0 20px rgba(212, 160, 82, 0.4)' }
         },
         networkPulse: {
           '0%, 100%': { opacity: '0.3' },
@@ -114,7 +134,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace']
+        mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+        frontier: ['Bebas Neue', 'Impact', 'Arial Black', 'sans-serif']
       },
       letterSpacing: {
         'tighter': '-0.02em',

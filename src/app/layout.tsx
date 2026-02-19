@@ -10,22 +10,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Ergo Frontier — Trustless P2P ERG Exchange",
-  description: "Trade ERG peer-to-peer with trustless smart contract escrow and decentralized verification. No exchange. No middleman. Just math.",
-  keywords: "Ergo, ERG, cryptocurrency, P2P exchange, DeFi, decentralized verification, trustless, decentralized trading",
+  title: "Ergo Frontier — The Edge of Decentralized Exchange",
+  description: "Trade ERG peer-to-peer with trustless smart contract escrow and Verification Network. No exchange. No middleman. Just the frontier.",
+  keywords: "Ergo, ERG, cryptocurrency, P2P exchange, DeFi, decentralized verification, trustless, frontier, decentralized trading",
   authors: [{ name: "Ergo Frontier Team" }],
   viewport: "width=device-width, initial-scale=1",
-  themeColor: "#0a0e1a",
+  themeColor: "#0d0a07",
   openGraph: {
-    title: "Ergo Frontier — Trustless P2P ERG Exchange",
-    description: "Trade ERG peer-to-peer with trustless smart contract escrow and decentralized verification.",
+    title: "Ergo Frontier — The Edge of Decentralized Exchange",
+    description: "Trade ERG peer-to-peer with trustless smart contract escrow and Verification Network.",
     type: "website",
     url: "https://exchange.ergofrontier.com"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ergo Frontier — Trustless P2P ERG Exchange",
-    description: "Trade ERG peer-to-peer with trustless smart contract escrow and decentralized verification."
+    title: "Ergo Frontier — The Edge of Decentralized Exchange",
+    description: "Trade ERG peer-to-peer with trustless smart contract escrow and Verification Network."
   }
 };
 

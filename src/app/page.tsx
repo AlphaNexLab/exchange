@@ -112,16 +112,16 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-emerald-200 bg-clip-text text-transparent">
-                Buy ERG directly.
+              <h1 className="text-6xl md:text-8xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-teal-300 bg-clip-text text-transparent tracking-tight leading-none">
+                TRADE ERG.
                 <br />
-                <span className="text-blue-400">No exchange.</span>
+                <span className="text-amber-400">PEER TO PEER.</span>
                 <br />
-                <span className="text-emerald-400">No middleman.</span>
+                <span className="text-teal-400">NO MIDDLEMAN.</span>
               </h1>
               
-              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                The first decentralized P2P ERG/fiat exchange with cryptographic verification.
+              <p className="text-xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+                The frontier of decentralized exchange.
                 Trade ERG for fiat directly with sellers, secured by smart contracts.
               </p>
 
@@ -141,29 +141,27 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Floating orbs animation */}
+            {/* Frontier horizon gradient */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={`absolute w-64 h-64 rounded-full opacity-20 blur-3xl ${
-                    i === 0 ? 'bg-blue-500' : i === 1 ? 'bg-emerald-500' : 'bg-purple-500'
-                  }`}
-                  animate={{
-                    x: [0, 100, -100, 0],
-                    y: [0, -100, 100, 0],
-                  }}
-                  transition={{
-                    duration: 10 + i * 2,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    left: `${20 + i * 30}%`,
-                    top: `${20 + i * 20}%`,
-                  }}
-                />
-              ))}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amber-500/5" />
+              <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-radial from-amber-500/10 via-amber-500/5 to-transparent" />
+              {/* Subtle warm ambient light */}
+              <motion.div
+                className="absolute w-96 h-96 rounded-full opacity-10 blur-3xl bg-amber-400"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.1, 0.15, 0.1],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{
+                  right: '20%',
+                  bottom: '10%',
+                }}
+              />
             </div>
           </div>
         </section>
@@ -178,24 +176,24 @@ export default function HomePage() {
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div className="p-6">
-                <div className="text-4xl font-bold text-blue-400 mb-2">
+                <div className="text-4xl font-bold text-amber-400 mb-2">
                   {formatNumber(animatedStats.trades)}
                 </div>
-                <div className="text-gray-400">Total Trades</div>
+                <div className="text-slate-400">Total Trades</div>
               </div>
               
               <div className="p-6">
-                <div className="text-4xl font-bold text-emerald-400 mb-2">
+                <div className="text-4xl font-bold text-amber-400 mb-2">
                   {formatCurrency(animatedStats.volume)}
                 </div>
-                <div className="text-gray-400">Volume Traded</div>
+                <div className="text-slate-400">Volume Traded</div>
               </div>
               
               <div className="p-6">
-                <div className="text-4xl font-bold text-white mb-2">
+                <div className="text-4xl font-bold text-amber-400 mb-2">
                   {animatedStats.sellers}
                 </div>
-                <div className="text-gray-400">Active Sellers</div>
+                <div className="text-slate-400">Active Sellers</div>
               </div>
             </div>
           </motion.div>
@@ -208,9 +206,9 @@ export default function HomePage() {
               className="text-center mb-16"
               {...fadeInUp}
             >
-              <h2 className="text-4xl font-bold mb-4">Why Choose Ergo Frontier?</h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Experience the future of cryptocurrency trading with our secure, decentralized platform
+              <h2 className="text-5xl font-frontier font-bold mb-4 tracking-wider">WHY CHOOSE ERGO FRONTIER?</h2>
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                Experience the frontier of cryptocurrency trading with our secure, decentralized platform
               </p>
             </motion.div>
 
@@ -224,15 +222,15 @@ export default function HomePage() {
                 const Icon = feature.icon;
                 return (
                   <motion.div key={index} variants={fadeInUp}>
-                    <Card className="h-full hover:border-blue-500/50 transition-all duration-300 group">
+                    <Card className="h-full hover:border-amber-500/50 transition-all duration-300 group glow-frontier">
                       <CardHeader className="text-center">
-                        <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500/20 transition-colors">
-                          <Icon className="w-8 h-8 text-blue-400" />
+                        <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-amber-500/20 transition-colors border border-amber-500/20">
+                          <Icon className="w-8 h-8 text-amber-400" />
                         </div>
-                        <CardTitle className="text-xl">{feature.title}</CardTitle>
+                        <CardTitle className="text-xl font-frontier tracking-wider">{feature.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-400 text-center">{feature.description}</p>
+                        <p className="text-slate-400 text-center">{feature.description}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -243,7 +241,7 @@ export default function HomePage() {
         </section>
 
         {/* How It Works */}
-        <section className="py-20 px-4 bg-navy-800/20">
+        <section className="py-20 px-4 bg-space-800/20">
           <div className="max-w-6xl mx-auto">
             <motion.div
               className="text-center mb-16"
@@ -264,15 +262,15 @@ export default function HomePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.2, duration: 0.6 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center mx-auto mb-4 text-space-900 font-bold text-xl shadow-lg">
                     {step.number}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                  <p className="text-gray-400">{step.description}</p>
+                  <h3 className="text-xl font-frontier font-bold mb-2 tracking-wide">{step.title}</h3>
+                  <p className="text-slate-400">{step.description}</p>
                   
                   {/* Arrow between steps */}
                   {index < steps.length - 1 && (
-                    <div className="hidden lg:block absolute top-8 -right-4 text-gray-500">
+                    <div className="hidden lg:block absolute top-8 -right-4 text-amber-500/60">
                       <ChevronRight className="w-8 h-8" />
                     </div>
                   )}
@@ -290,11 +288,11 @@ export default function HomePage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
             >
-              <Card className="p-12 bg-gradient-to-br from-navy-800 to-navy-700 border-blue-500/20">
+              <Card className="p-12 bg-gradient-to-br from-space-800 to-space-700 border-amber-500/20 glow-frontier">
                 <CardContent className="space-y-6">
-                  <h2 className="text-3xl font-bold">Ready to Start Trading?</h2>
-                  <p className="text-xl text-gray-300">
-                    Join the decentralized revolution. Trade ERG securely with real people.
+                  <h2 className="text-4xl font-frontier font-bold tracking-wider">READY TO START TRADING?</h2>
+                  <p className="text-xl text-slate-300">
+                    Join the frontier revolution. Trade ERG securely with real pioneers.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <Link href="/exchange">
