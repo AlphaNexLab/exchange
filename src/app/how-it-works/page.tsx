@@ -56,9 +56,9 @@ export default function HowItWorksPage() {
     },
     {
       icon: Shield,
-      title: "TLS Verification",
-      description: "Decentralized judges verify your payment",
-      details: "TLS Quorum judges check the seller's account to confirm payment was received."
+      title: "Payment Verification",
+      description: "Independent verifiers confirm your payment",
+      details: "Our verification network checks the seller's account to cryptographically confirm payment was received."
     },
     {
       icon: CheckCircle,
@@ -77,9 +77,9 @@ export default function HowItWorksPage() {
     },
     {
       icon: Users,
-      title: "TLS Quorum Judges",
-      description: "Decentralized network of judges verify payments using TLS proofs",
-      benefits: ["5 judges per trade", "3/5 consensus required", "Privacy preserved"]
+      title: "Verification Network",
+      description: "Decentralized network of independent verifiers confirm payments cryptographically",
+      benefits: ["5 verifiers per trade", "3/5 consensus required", "Privacy preserved"]
     },
     {
       icon: Globe,
@@ -91,8 +91,8 @@ export default function HowItWorksPage() {
 
   const faqItems = [
     {
-      question: "How secure is TLS Quorum verification?",
-      answer: "TLS Quorum uses cryptographic proofs to verify payments without exposing sensitive data. Judges can confirm a payment was received without seeing account balances or personal information."
+      question: "How secure is the verification process?",
+      answer: "Our verification network uses cryptographic proofs to confirm payments without exposing sensitive data. Verifiers can confirm a payment was received without seeing account balances or personal information."
     },
     {
       question: "What happens if a seller doesn't receive payment?",
@@ -100,7 +100,7 @@ export default function HowItWorksPage() {
     },
     {
       question: "How long does verification take?",
-      answer: "TLS Quorum verification typically takes 2-5 minutes. Judges need to reach 3/5 consensus to release the ERG."
+      answer: "Verification typically takes 2-5 minutes. Verifiers need to reach 3/5 consensus to release the ERG."
     },
     {
       question: "What payment methods are supported?",
@@ -228,20 +228,20 @@ export default function HowItWorksPage() {
           </motion.div>
         </section>
 
-        {/* TLS Quorum Deep Dive */}
-        <section className="mb-20" id="tls-quorum">
+        {/* Verification Deep Dive */}
+        <section className="mb-20" id="verification">
           <motion.div {...fadeInUp}>
             <Card className="bg-gradient-to-br from-blue-500/5 to-emerald-500/5 border-blue-500/20">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl flex items-center justify-center gap-3">
                   <Shield className="w-8 h-8 text-blue-400" />
-                  TLS Quorum Explained
+                  Verification Network Explained
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-8">
                 <p className="text-lg text-center text-gray-300 max-w-3xl mx-auto">
-                  TLS Quorum is a revolutionary verification system that uses cryptographic proofs 
-                  to confirm payments without compromising privacy or requiring trusted intermediaries.
+                  Our verification network uses cryptographic proofs to confirm payments 
+                  without compromising privacy or requiring trusted intermediaries.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -253,7 +253,7 @@ export default function HowItWorksPage() {
                       <div>
                         <h4 className="font-semibold mb-2">Cryptographic Verification</h4>
                         <p className="text-sm text-gray-400">
-                          Judges use TLS (Transport Layer Security) proofs to verify transactions 
+                          Verifiers use cryptographic proofs to confirm transactions 
                           without accessing sensitive account information.
                         </p>
                       </div>
@@ -266,7 +266,7 @@ export default function HowItWorksPage() {
                       <div>
                         <h4 className="font-semibold mb-2">Decentralized Consensus</h4>
                         <p className="text-sm text-gray-400">
-                          5 independent judges evaluate each trade. 3 out of 5 must agree 
+                          5 independent verifiers evaluate each trade. 3 out of 5 must agree 
                           before ERG is released from escrow.
                         </p>
                       </div>
@@ -307,7 +307,7 @@ export default function HowItWorksPage() {
                       <div>
                         <h4 className="font-semibold mb-2">No Central Authority</h4>
                         <p className="text-sm text-gray-400">
-                          No single entity controls the verification process. Judges are 
+                          No single entity controls the verification process. Verifiers are 
                           distributed globally and operate independently.
                         </p>
                       </div>

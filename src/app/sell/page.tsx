@@ -38,7 +38,7 @@ export default function SellPage() {
     pricePerErg: '',
     paymentMethod: 'Revolut',
     paymentTag: '',
-    tlsConsent: false
+    verificationConsent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -60,7 +60,7 @@ export default function SellPage() {
       pricePerErg: '',
       paymentMethod: 'Revolut',
       paymentTag: '',
-      tlsConsent: false
+      verificationConsent: false
     });
   };
 
@@ -71,7 +71,7 @@ export default function SellPage() {
   const isFormValid = formData.amount && 
                      formData.pricePerErg && 
                      formData.paymentTag && 
-                     formData.tlsConsent &&
+                     formData.verificationConsent &&
                      wallet.connected;
 
   const paymentMethodOptions = PAYMENT_METHODS.map(method => ({
@@ -227,19 +227,19 @@ export default function SellPage() {
                       </p>
                     </div>
 
-                    {/* TLS Consent */}
+                    {/* Verification Consent */}
                     <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg">
                       <div className="flex items-start gap-3">
                         <input
                           type="checkbox"
-                          id="tlsConsent"
-                          checked={formData.tlsConsent}
-                          onChange={(e) => handleInputChange('tlsConsent', e.target.checked)}
+                          id="verificationConsent"
+                          checked={formData.verificationConsent}
+                          onChange={(e) => handleInputChange('verificationConsent', e.target.checked)}
                           disabled={!wallet.connected}
                           className="mt-1 w-4 h-4 text-blue-600 bg-navy-700 border-gray-600 rounded focus:ring-blue-500"
                         />
                         <div>
-                          <label htmlFor="tlsConsent" className="text-sm font-medium text-blue-300 cursor-pointer">
+                          <label htmlFor="verificationConsent" className="text-sm font-medium text-blue-300 cursor-pointer">
                             I grant our verification network access to confirm received payments *
                           </label>
                           <p className="text-xs text-blue-200/80 mt-1">
@@ -385,12 +385,12 @@ export default function SellPage() {
                   
                   <div className="flex items-center gap-3">
                     <Eye className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span className="text-sm">TLS Quorum verification</span>
+                    <span className="text-sm">Cryptographic verification</span>
                   </div>
                   
                   <div className="flex items-center gap-3">
                     <Users className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span className="text-sm">Decentralized judges</span>
+                    <span className="text-sm">Independent verifiers</span>
                   </div>
                   
                   <div className="flex items-center gap-3">
@@ -446,7 +446,7 @@ export default function SellPage() {
               </Card>
             </motion.div>
 
-            {/* TLS Quorum Explainer */}
+            {/* Verification Explainer */}
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -456,25 +456,25 @@ export default function SellPage() {
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Shield className="w-5 h-5 text-blue-400" />
-                    About TLS Quorum
+                    About Verification
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <p className="text-sm text-blue-200/80">
-                    TLS Quorum uses decentralized judges to verify payments by checking 
-                    seller bank statements through secure TLS connections.
+                    Our verification network uses independent verifiers to cryptographically 
+                    confirm payments were received — no trust required.
                   </p>
                   
                   <p className="text-sm text-blue-200/80">
-                    Your financial privacy is protected - judges only see transaction 
-                    verification data, not account details or balances.
+                    Your financial privacy is protected — verifiers only confirm transaction 
+                    status, not account details or balances.
                   </p>
                   
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="w-full border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-                    onClick={() => window.open('/how-it-works#tls-quorum', '_blank')}
+                    onClick={() => window.open('/how-it-works#verification', '_blank')}
                   >
                     Learn More
                     <ExternalLink className="w-3 h-3 ml-2" />
