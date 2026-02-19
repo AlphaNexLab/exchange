@@ -26,6 +26,9 @@ The first decentralized P2P ERG/fiat exchange with cryptographic payment verific
 
 ## 🎨 Design Philosophy
 
+TODO: Remember, the brand theme is western. Check the logs, there is the color.
+P.D: But i love the navy blue too ...
+
 **LEGENDARY** - Every pixel crafted to perfection:
 - Deep space navy backgrounds with subtle noise textures
 - Electric blue accents for CTAs and active states
