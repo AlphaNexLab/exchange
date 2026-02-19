@@ -17,9 +17,9 @@ The first decentralized P2P ERG/fiat exchange with cryptographic payment verific
 
 ## 🛠 Tech Stack
 
-- **Next.js 14** with App Router and TypeScript
+- **Svelte** based on https://github.com/ergo-basics/template
 - **Tailwind CSS** for stunning responsive design
-- **Framer Motion** for smooth animations
+- **Framer Motion** for smooth animations (if is compatible with svelte)
 - **shadcn/ui** components
 - **Nautilus Wallet Integration** via EIP-12 dApp connector
 - **Static Export** for IPFS deployment
