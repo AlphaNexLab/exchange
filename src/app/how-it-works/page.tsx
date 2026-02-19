@@ -1,0 +1,369 @@
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Navigation } from '@/components/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  Shield, 
+  Users, 
+  Lock, 
+  Eye, 
+  ArrowRight, 
+  CheckCircle, 
+  Wallet,
+  DollarSign,
+  Clock,
+  Server,
+  Key,
+  Globe
+} from 'lucide-react';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6 }
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+export default function HowItWorksPage() {
+
+  const steps = [
+    {
+      icon: Wallet,
+      title: "Connect Wallet",
+      description: "Link your Nautilus wallet to start trading",
+      details: "Your wallet holds your ERG and receives purchased tokens. No registration or KYC required."
+    },
+    {
+      icon: Eye,
+      title: "Browse Offers",
+      description: "Find verified sellers with competitive rates",
+      details: "All sellers are rated by the community and their ERG is locked in smart contract escrow."
+    },
+    {
+      icon: DollarSign,
+      title: "Send Payment",
+      description: "Pay the seller via Revolut, Wise, or PayPal",
+      details: "Send fiat payment directly to the seller using traditional payment methods."
+    },
+    {
+      icon: Shield,
+      title: "TLS Verification",
+      description: "Decentralized judges verify your payment",
+      details: "TLS Quorum judges check the seller's account to confirm payment was received."
+    },
+    {
+      icon: CheckCircle,
+      title: "Receive ERG",
+      description: "ERG is automatically sent to your wallet",
+      details: "Once payment is verified, the smart contract releases ERG directly to your wallet."
+    }
+  ];
+
+  const features = [
+    {
+      icon: Lock,
+      title: "Smart Contract Escrow",
+      description: "ERG is locked in Ergo smart contracts until payment verification",
+      benefits: ["Trustless trading", "No counterparty risk", "Automated execution"]
+    },
+    {
+      icon: Users,
+      title: "TLS Quorum Judges",
+      description: "Decentralized network of judges verify payments using TLS proofs",
+      benefits: ["5 judges per trade", "3/5 consensus required", "Privacy preserved"]
+    },
+    {
+      icon: Globe,
+      title: "Peer-to-Peer Trading",
+      description: "Direct trades between buyers and sellers without intermediaries",
+      benefits: ["No exchange fees", "No custody risk", "Global accessibility"]
+    }
+  ];
+
+  const faqItems = [
+    {
+      question: "How secure is TLS Quorum verification?",
+      answer: "TLS Quorum uses cryptographic proofs to verify payments without exposing sensitive data. Judges can confirm a payment was received without seeing account balances or personal information."
+    },
+    {
+      question: "What happens if a seller doesn't receive payment?",
+      answer: "If judges cannot verify payment within the time window, the ERG is returned to the seller and the trade is cancelled. The escrow smart contract ensures no funds are lost."
+    },
+    {
+      question: "How long does verification take?",
+      answer: "TLS Quorum verification typically takes 2-5 minutes. Judges need to reach 3/5 consensus to release the ERG."
+    },
+    {
+      question: "What payment methods are supported?",
+      answer: "Currently we support Revolut, Wise, and PayPal. More payment providers will be added based on community demand."
+    },
+    {
+      question: "Are there any fees?",
+      answer: "There's only a 1% network fee to cover smart contract execution and judge rewards. No deposit, withdrawal, or platform fees."
+    },
+    {
+      question: "Do I need to provide ID or KYC?",
+      answer: "No KYC required. Simply connect your Nautilus wallet to start trading. Ergo Frontier is fully decentralized and permissionless."
+    }
+  ];
+
+  return (
+    <div className="min-h-screen">
+      <Navigation />
+      
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* Header */}
+        <motion.div className="text-center mb-16" {...fadeInUp}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-emerald-200 bg-clip-text text-transparent">
+            How It Works
+          </h1>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            Ergo Frontier enables secure peer-to-peer ERG trading using smart contracts 
+            and decentralized verification. Here's how the magic happens.
+          </p>
+        </motion.div>
+
+        {/* Trading Flow */}
+        <section className="mb-20">
+          <motion.div className="text-center mb-12" {...fadeInUp}>
+            <h2 className="text-3xl font-bold mb-4">Trading Flow</h2>
+            <p className="text-lg text-gray-400">
+              Five simple steps to buy ERG directly from sellers
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="space-y-8"
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+          >
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <motion.div key={index} variants={fadeInUp}>
+                  <Card className="overflow-hidden hover:border-blue-500/50 transition-all duration-300">
+                    <CardContent className="p-8">
+                      <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                        <div className="flex items-center gap-4 flex-shrink-0">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            {index + 1}
+                          </div>
+                          <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center">
+                            <Icon className="w-8 h-8 text-blue-400" />
+                          </div>
+                        </div>
+                        
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                          <p className="text-gray-300 mb-3">{step.description}</p>
+                          <p className="text-sm text-gray-400">{step.details}</p>
+                        </div>
+                        
+                        {index < steps.length - 1 && (
+                          <div className="hidden md:block text-gray-500">
+                            <ArrowRight className="w-6 h-6" />
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </section>
+
+        {/* Key Features */}
+        <section className="mb-20">
+          <motion.div className="text-center mb-12" {...fadeInUp}>
+            <h2 className="text-3xl font-bold mb-4">Key Features</h2>
+            <p className="text-lg text-gray-400">
+              Advanced technology stack ensuring secure and efficient trading
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+          >
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div key={index} variants={fadeInUp}>
+                  <Card className="h-full hover:border-emerald-500/50 transition-all duration-300 group">
+                    <CardHeader className="text-center">
+                      <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-500/20 transition-colors">
+                        <Icon className="w-8 h-8 text-emerald-400" />
+                      </div>
+                      <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-400 text-center mb-6">{feature.description}</p>
+                      
+                      <div className="space-y-2">
+                        {feature.benefits.map((benefit, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                            <span className="text-sm text-gray-300">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </section>
+
+        {/* TLS Quorum Deep Dive */}
+        <section className="mb-20" id="tls-quorum">
+          <motion.div {...fadeInUp}>
+            <Card className="bg-gradient-to-br from-blue-500/5 to-emerald-500/5 border-blue-500/20">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl flex items-center justify-center gap-3">
+                  <Shield className="w-8 h-8 text-blue-400" />
+                  TLS Quorum Explained
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <p className="text-lg text-center text-gray-300 max-w-3xl mx-auto">
+                  TLS Quorum is a revolutionary verification system that uses cryptographic proofs 
+                  to confirm payments without compromising privacy or requiring trusted intermediaries.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Key className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Cryptographic Verification</h4>
+                        <p className="text-sm text-gray-400">
+                          Judges use TLS (Transport Layer Security) proofs to verify transactions 
+                          without accessing sensitive account information.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Users className="w-5 h-5 text-emerald-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Decentralized Consensus</h4>
+                        <p className="text-sm text-gray-400">
+                          5 independent judges evaluate each trade. 3 out of 5 must agree 
+                          before ERG is released from escrow.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Eye className="w-5 h-5 text-purple-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Privacy Preserved</h4>
+                        <p className="text-sm text-gray-400">
+                          Only transaction verification data is shared. Account balances, 
+                          personal details, and other transactions remain private.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-5 h-5 text-yellow-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Fast Verification</h4>
+                        <p className="text-sm text-gray-400">
+                          Automated verification process typically completes in 2-5 minutes, 
+                          much faster than traditional banking confirmations.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Server className="w-5 h-5 text-red-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">No Central Authority</h4>
+                        <p className="text-sm text-gray-400">
+                          No single entity controls the verification process. Judges are 
+                          distributed globally and operate independently.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Dispute Resolution</h4>
+                        <p className="text-sm text-gray-400">
+                          If consensus cannot be reached, funds are safely returned to 
+                          original owners. No funds are ever lost or frozen.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </section>
+
+        {/* FAQ */}
+        <section>
+          <motion.div className="text-center mb-12" {...fadeInUp}>
+            <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-gray-400">
+              Get answers to common questions about Ergo Frontier
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="space-y-4"
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+          >
+            {faqItems.map((item, index) => (
+              <motion.div key={index} variants={fadeInUp}>
+                <Card className="hover:border-gray-600 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-3 text-blue-300">
+                      {item.question}
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </section>
+      </main>
+    </div>
+  );
+}
