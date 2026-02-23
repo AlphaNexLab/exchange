@@ -465,7 +465,7 @@ export default function NodesPage() {
                     <div className="text-xs text-slate-400 leading-relaxed">
                       <span className="text-amber-400 font-semibold">Estimates only.</span>{' '}
                       Celaut is in alpha — the network is small and growing. Actual earnings
-                      depend on demand, node reputation, gas pricing, and network conditions.
+                      depend on demand, uptime, and network conditions.
                       Early operators are positioning for future growth.
                     </div>
                   </div>
@@ -704,6 +704,21 @@ java -jar -Xmx4G ergo-6.0.2.jar --mainnet -c ergo.conf`}
                     }}
                   />
 
+                  <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3 text-xs text-slate-400 mt-4">
+                    <strong className="text-amber-300">⚠️ Generate your own API key!</strong>{' '}
+                    The hash above is a placeholder. Once your node is running, visit{' '}
+                    <a
+                      href="http://127.0.0.1:9053/swagger"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-400 hover:text-teal-300 underline decoration-teal-500/30"
+                    >
+                      http://127.0.0.1:9053/swagger
+                    </a>{' '}
+                    to generate a secure API key hash and replace it in your{' '}
+                    <code className="bg-space-900/60 px-1 rounded text-teal-400">ergo.conf</code>.
+                  </div>
+
                   <div className="text-xs text-slate-500 mt-2">
                     Verify at{' '}
                     <code className="bg-space-900/60 px-1.5 py-0.5 rounded text-teal-400">
@@ -739,21 +754,18 @@ java -jar -Xmx4G ergo-6.0.2.jar --mainnet -c ergo.conf`}
               <Card className="p-6">
                 <CardContent className="p-0 space-y-4">
                   <div className="text-sm text-slate-400 mb-4">
-                    One command installs Docker, Python, and starts your Nodo.{' '}
+                    Requires <strong className="text-slate-300">Ubuntu 22.04+</strong>. One command installs everything.{' '}
                     <strong className="text-slate-300">~5 minutes</strong> total.
                   </div>
 
-                  <PlatformTabs
-                    content={{
-                      linux: (
-                        <div className="space-y-3">
-                          <CodeBlock
-                            label="One-command install (Ubuntu 22.04+)"
-                            code="curl -sSfL https://raw.githubusercontent.com/celaut-project/nodo/stable/install.sh | sudo bash"
-                          />
-                          <CodeBlock
-                            label="Configure your wallet"
-                            code={`# Open interactive config:
+                  <div className="space-y-3">
+                    <CodeBlock
+                      label="Install Nodo (Ubuntu 22.04+)"
+                      code={`curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/celaut-project/nodo/stable/install.sh | sudo bash`}
+                    />
+                    <CodeBlock
+                      label="Configure your wallet"
+                      code={`# Open interactive config:
 nodo config
 
 # Or manually edit:
@@ -761,51 +773,15 @@ sudo nano /nodo/config.yaml
 # Set your wallet mnemonic under ledgers.ergo.WALLET_MNEMONIC
 
 sudo systemctl restart nodo`}
-                          />
-                          <CodeBlock
-                            label="Monitor your node"
-                            code={`nodo tui      # Live dashboard
+                    />
+                    <CodeBlock
+                      label="Monitor your node"
+                      code={`nodo tui      # Live dashboard
 nodo info     # Quick status
 nodo peers    # Connected peers
 nodo logs     # View logs`}
-                          />
-                        </div>
-                      ),
-                      mac: (
-                        <div className="space-y-3">
-                          <CodeBlock
-                            label="Install (uses lightweight Linux VM)"
-                            code="curl -sSfL https://raw.githubusercontent.com/your-org/ergo-onboarding/main/install-nodo.sh | bash"
-                          />
-                          <div className="text-xs text-slate-500">
-                            Nodo requires Linux Docker. The installer sets up an Ubuntu VM via OrbStack or Lima automatically.
-                          </div>
-                          <CodeBlock
-                            label="Configure your wallet"
-                            code={`nodo config
-# Set your Ergo wallet mnemonic to receive payments`}
-                          />
-                        </div>
-                      ),
-                      windows: (
-                        <div className="space-y-3">
-                          <CodeBlock
-                            label="Install via PowerShell (as Administrator)"
-                            code={`Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-irm https://raw.githubusercontent.com/your-org/ergo-onboarding/main/install-nodo.ps1 | iex`}
-                          />
-                          <div className="text-xs text-slate-500">
-                            Installs WSL2 + Ubuntu automatically. A reboot may be required.
-                          </div>
-                          <CodeBlock
-                            label="Configure (inside WSL)"
-                            code={`nodo config
-# Set your Ergo wallet mnemonic to receive payments`}
-                          />
-                        </div>
-                      ),
-                    }}
-                  />
+                    />
+                  </div>
 
                   {/* Connectivity */}
                   <div className="bg-space-900/40 rounded-xl p-4 border border-slate-700/30 mt-4">
@@ -856,8 +832,8 @@ irm https://raw.githubusercontent.com/your-org/ergo-onboarding/main/install-nodo
                 </h3>
                 <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
                   Celaut is in active development. The network is small and earnings are modest —
-                  but the protocol needs operators like you to grow. Early node runners build
-                  reputation, influence gas pricing, and position themselves for when demand
+                  but it needs operators like you to grow. Early node runners build
+                  reputation and position themselves for when demand
                   scales. This is the ground floor.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
