@@ -1,0 +1,171 @@
+# Ergo Frontier Exchange — Full Documentation
+
+> Decentralized peer-to-peer ERG exchange. Trade ERG for fiat (USD/EUR) directly with other users, secured by Ergo smart contract escrow and an independent verification network. No KYC, no middleman, 1% fee.
+
+## Overview
+
+Ergo Frontier Exchange is a decentralized peer-to-peer platform for trading ERG (Ergo cryptocurrency) for fiat currencies. It eliminates the need for centralized exchanges by using Ergo blockchain smart contracts as escrow and a decentralized verification network to confirm fiat payments. The platform charges only a 1% network fee and requires no KYC or registration — users simply connect their Nautilus wallet.
+
+Website: https://ergo-frontier-exchange.pages.dev
+GitHub: https://github.com/ergo-frontier/exchange
+
+---
+
+## Pages & Features
+
+### Home Page (/)
+
+The landing page introduces the platform with four key value propositions:
+
+- **Trustless Escrow**: Smart contracts hold ERG until payment is verified by independent verifiers
+- **Instant Trading**: Connect wallet, pick offer, pay seller, get ERG
+- **Decentralized**: No middleman, no KYC, no exchange risk — pure peer-to-peer trading
+- **Low Fees**: Only 1% network fee; no deposit, withdrawal, or platform fees
+
+The page displays live platform statistics including total trades, volume traded, and number of active sellers.
+
+### Exchange Page (/exchange)
+
+The main trading interface where users browse and purchase ERG from verified sellers.
+
+**Features:**
+- Filterable list of sell offers with payment method filters (Revolut, Wise, PayPal, all)
+- Sortable by price (low/high), amount (low/high), or seller rating
+- Each offer displays: seller address, trust rating, number of completed trades, ERG amount, price per ERG, payment method, total cost
+- Market stats showing best price, average price, total ERG available, and average response time (~2 min)
+- Wallet connection required to initiate trades
+- 1% network fee displayed on each offer
+
+### Sell Page (/sell)
+
+Interface for creating sell offers to list ERG for sale.
+
+**Sell Offer Creation:**
+- Set ERG amount to sell
+- Set price per ERG in USD
+- Choose payment method (Revolut, Wise, PayPal)
+- Provide payment handle/tag for buyers
+- Grant verification network consent for payment confirmation
+- ERG is locked in smart contract escrow upon offer creation
+
+**How Selling Works:**
+1. Lock ERG in escrow via smart contract
+2. Offer appears in the exchange order book
+3. Buyer sends fiat to your payment handle
+4. Verification network confirms payment
+5. Smart contract releases ERG to buyer
+
+**Security Features:**
+- Smart contract escrow
+- Cryptographic verification
+- Independent verifiers
+- Automated release
+
+### Trade Page (/trade/[id])
+
+Individual trade execution page for completing a specific purchase. Handles the payment flow between buyer and seller for a selected offer.
+
+### How It Works Page (/how-it-works)
+
+Comprehensive explanation of the platform's trading flow and security mechanisms.
+
+**5-Step Trading Flow:**
+1. **Connect Wallet** — Link Nautilus wallet; no registration or KYC required
+2. **Browse Offers** — Find verified sellers with competitive rates; all ERG is locked in escrow
+3. **Send Payment** — Pay seller via Revolut, Wise, or PayPal
+4. **Payment Verification** — Independent verifiers cryptographically confirm payment receipt
+5. **Receive ERG** — Smart contract automatically releases ERG to buyer's wallet
+
+**Key Security Features:**
+
+- **Smart Contract Escrow**: ERG locked in Ergo smart contracts until payment verification; trustless trading, no counterparty risk, automated execution
+- **Verification Network**: Decentralized network of 5 independent verifiers per trade; 3/5 consensus required; privacy preserved — only transaction status verified, not account details
+- **Peer-to-Peer Trading**: Direct trades without intermediaries; no exchange fees, no custody risk, global accessibility
+
+**Verification Network Details:**
+- Cryptographic proofs confirm payments without exposing sensitive data
+- 5 independent verifiers evaluate each trade
+- 3/5 consensus required to release ERG from escrow
+- Only transaction verification data is shared — account balances and personal details remain private
+- Automated verification completes in 2-5 minutes
+- No central authority controls the verification process
+- If consensus cannot be reached, funds are safely returned to original owners
+
+**FAQ Topics:**
+- Verification security (cryptographic proofs, no sensitive data exposure)
+- Failed payment handling (ERG returned to seller, trade cancelled)
+- Verification time (2-5 minutes)
+- Supported payment methods (Revolut, Wise, PayPal)
+- Fees (1% network fee only)
+- KYC requirements (none — fully decentralized and permissionless)
+
+### Nodes Page (/nodes)
+
+Guide for running Celaut Nodo compute nodes to earn ERG passively by sharing computer resources.
+
+**Concept:** "Airbnb for CPU & RAM" — users share spare compute on the Celaut decentralized compute network and earn ERG trustlessly via on-chain smart contract payments.
+
+**Earning Calculator:**
+Configurable sliders for CPU cores (1-64), RAM (2-256 GB), network speed, GPU toggle, and uptime (Casual 6h/Regular 16h/24-7). Displays estimated daily, monthly, and yearly ERG earnings with USD conversion and a node competitiveness score.
+
+**Three-Step Setup Guide:**
+
+**Step 1: Get an Ergo Wallet**
+- Mobile: Terminus Wallet (iOS) or Ergo Wallet (Android)
+- Desktop: Nautilus Wallet browser extension (Chrome, Firefox, Brave, Edge)
+- Critical: Write 15-word recovery phrase on paper
+
+**Step 2: Run an Ergo Node (Optional)**
+- Requirements: Java 11+, 4 GB RAM, 20 GB SSD
+- Platform-specific instructions for Linux, macOS, Windows
+- Downloads ergo-6.0.2.jar from GitHub
+- Alternative: Satergo GUI wallet with embedded node
+- Verify at http://127.0.0.1:9053/panel
+
+**Step 3: Run Celaut Nodo**
+- One-command install for Linux (Ubuntu 22.04+): `curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/celaut-project/nodo/stable/install.sh | sudo bash`
+- Configure wallet mnemonic via `nodo config` or `/nodo/config.yaml`
+- Monitor with `nodo tui` (live dashboard), `nodo info`, `nodo peers`, `nodo logs`
+- Network connectivity options: port forwarding (best), ngrok tunnel (easy)
+
+**Alpha Network Notice:** Celaut is in active development; the network is small and growing. Early node operators build reputation and position for future demand scaling.
+
+**External Resources:**
+- Nodo GitHub: https://github.com/celaut-project/nodo
+- Celaut Paradigm: https://github.com/celaut-project/paradigm
+- Ergo Platform: https://ergoplatform.org
+- Ergo Discord: https://discord.gg/ergo-platform-668903786361651200
+
+---
+
+## Technology Stack
+
+- **Framework**: Next.js 14 with TypeScript
+- **Styling**: Tailwind CSS with custom frontier/western theme
+- **Animations**: Framer Motion
+- **Blockchain**: Ergo (ErgoScript smart contracts, eUTXO model)
+- **Wallet**: Nautilus wallet browser extension
+- **Deployment**: Cloudflare Pages
+- **Payment Verification**: Decentralized verifier network with cryptographic proofs
+
+## Supported Payment Methods
+
+- Revolut
+- Wise (TransferWise)
+- PayPal
+
+## Fee Structure
+
+- 1% network fee per trade (covers smart contract execution and verifier rewards)
+- No deposit fees
+- No withdrawal fees
+- No platform fees
+
+## Security Model
+
+1. Seller locks ERG in Ergo smart contract escrow
+2. Buyer sends fiat payment to seller's payment handle
+3. 5 independent verifiers check for payment receipt using cryptographic proofs
+4. 3/5 consensus required to release ERG
+5. If consensus fails, ERG returned to seller automatically
+6. Privacy preserved — verifiers confirm transaction status only, not personal data
