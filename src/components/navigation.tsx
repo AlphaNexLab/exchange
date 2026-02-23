@@ -11,6 +11,7 @@ import {
   BarChart3, 
   DollarSign, 
   HelpCircle, 
+  Server,
   ChevronDown,
   Copy,
   ExternalLink,
@@ -36,6 +37,7 @@ export function Navigation({}: NavigationProps = {}) {
     { href: '/exchange', label: 'Exchange', icon: BarChart3 },
     { href: '/sell', label: 'Sell', icon: DollarSign },
     { href: '/how-it-works', label: 'How It Works', icon: HelpCircle },
+    { href: '/nodes', label: 'Nodes', icon: Server },
   ];
 
   const handleConnect = async () => {
