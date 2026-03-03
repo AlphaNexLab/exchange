@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Aurora/Gradient Mesh background — pure CSS animated blobs
-	// Layered on top of Three.js particles for maximum depth
+	// Navy/blue/amber theme for Ergo Frontier
 </script>
 
 <div class="aurora-container">
@@ -31,7 +31,7 @@
 		height: 600px;
 		top: -15%;
 		right: -5%;
-		background: rgba(255, 109, 58, 0.15);
+		background: rgba(59, 130, 246, 0.12);
 		animation: auroraMove1 25s ease-in-out infinite, auroraMorph1 20s ease-in-out infinite;
 	}
 
@@ -40,7 +40,7 @@
 		height: 500px;
 		bottom: -10%;
 		left: -10%;
-		background: rgba(251, 191, 36, 0.10);
+		background: rgba(251, 191, 36, 0.08);
 		animation: auroraMove2 30s ease-in-out infinite, auroraMorph2 22s ease-in-out infinite;
 	}
 
@@ -49,7 +49,7 @@
 		height: 450px;
 		top: 30%;
 		left: 20%;
-		background: rgba(220, 38, 38, 0.08);
+		background: rgba(16, 185, 129, 0.06);
 		animation: auroraMove3 28s ease-in-out infinite, auroraMorph3 24s ease-in-out infinite;
 	}
 
@@ -58,7 +58,7 @@
 		height: 350px;
 		top: 10%;
 		right: 25%;
-		background: rgba(255, 109, 58, 0.08);
+		background: rgba(59, 130, 246, 0.08);
 		animation: auroraMove4 22s ease-in-out infinite, auroraMorph2 26s ease-in-out infinite;
 	}
 

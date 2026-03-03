@@ -41,14 +41,14 @@
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 			renderer.setClearColor(0x000000, 0);
 
-			// Particles — orange/amber color scheme for Ergo Frontier
+			// Particles — navy/blue/amber color scheme
 			const particleCount = 140;
 			const positions = new Float32Array(particleCount * 3);
 			const colors = new Float32Array(particleCount * 3);
 			const velocities = new Float32Array(particleCount * 3);
 			const spread = 80;
 
-			const orange = { r: 255 / 255, g: 109 / 255, b: 58 / 255 };
+			const blue = { r: 96 / 255, g: 165 / 255, b: 250 / 255 };
 			const amber = { r: 251 / 255, g: 191 / 255, b: 36 / 255 };
 
 			for (let i = 0; i < particleCount; i++) {
@@ -61,11 +61,21 @@
 				velocities[i3 + 1] = (Math.random() - 0.5) * 0.012;
 				velocities[i3 + 2] = (Math.random() - 0.5) * 0.006;
 
-				// Mix orange and amber
+				// Mix blue and amber (70% blue, 30% amber)
 				const t = Math.random();
-				colors[i3] = orange.r + (amber.r - orange.r) * t;
-				colors[i3 + 1] = orange.g + (amber.g - orange.g) * t;
-				colors[i3 + 2] = orange.b + (amber.b - orange.b) * t;
+				if (t < 0.7) {
+					// Blue tones
+					const s = Math.random();
+					colors[i3] = blue.r * (0.7 + s * 0.3);
+					colors[i3 + 1] = blue.g * (0.7 + s * 0.3);
+					colors[i3 + 2] = blue.b * (0.7 + s * 0.3);
+				} else {
+					// Amber accents
+					const s = Math.random();
+					colors[i3] = amber.r * (0.7 + s * 0.3);
+					colors[i3 + 1] = amber.g * (0.7 + s * 0.3);
+					colors[i3 + 2] = amber.b * (0.7 + s * 0.3);
+				}
 			}
 
 			const particleGeometry = new BufferGeometry();
@@ -166,10 +176,10 @@
 							lp[li + 4] = posArr[j3 + 1];
 							lp[li + 5] = posArr[j3 + 2];
 
-							// Orange-tinted connection lines
-							const r = (255 / 255) * alpha;
-							const g = (109 / 255) * alpha;
-							const b = (58 / 255) * alpha;
+							// Blue-tinted connection lines
+							const r = (59 / 255) * alpha;
+							const g = (130 / 255) * alpha;
+							const b = (246 / 255) * alpha;
 							lc[li] = r; lc[li + 1] = g; lc[li + 2] = b;
 							lc[li + 3] = r; lc[li + 4] = g; lc[li + 5] = b;
 

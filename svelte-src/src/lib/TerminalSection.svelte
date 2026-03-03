@@ -2,13 +2,18 @@
 	import { onMount } from 'svelte';
 
 	const lines = [
-		{ text: '> connecting to ergo node...', delay: 0 },
-		{ text: '> node synced. block #1,423,891', delay: 1200 },
-		{ text: '> loading pair ERG/SigUSD...', delay: 2200 },
-		{ text: '> best price: 2.847 SigUSD per ERG', delay: 3400 },
-		{ text: '> executing swap: 100 ERG → 284.7 SigUSD', delay: 4800 },
-		{ text: '> transaction submitted: 9f4a2b...', delay: 6200 },
-		{ text: '> ✓ confirmed in block #1,423,892', delay: 7600, success: true },
+		{ text: '> connecting to nautilus wallet...', delay: 0 },
+		{ text: '> wallet connected: 9f4a2b...c3d1', delay: 1200 },
+		{ text: '> loading order book...', delay: 2200 },
+		{ text: '> found 12 active sellers', delay: 3200 },
+		{ text: '> best offer: 100 ERG @ 2.85 USD/ERG (Revolut)', delay: 4200 },
+		{ text: '> initiating trade with seller: 9xK2m...7f9a', delay: 5400 },
+		{ text: '> smart contract locking 100 ERG in escrow...', delay: 6600 },
+		{ text: '> escrow confirmed: tx 4e8b2a...9c1d', delay: 7800 },
+		{ text: '> send $285.00 via Revolut to seller', delay: 9000 },
+		{ text: '> verifiers confirming payment... [3/5] ✓', delay: 10400 },
+		{ text: '> payment verified. releasing ERG...', delay: 11800 },
+		{ text: '> ✓ 100 ERG received in your wallet', delay: 13000, success: true },
 	];
 
 	let visibleLines = $state<Array<{ text: string; typed: string; success?: boolean }>>([]);
@@ -67,7 +72,7 @@
 	<div class="container">
 		<span class="section-label">Live Trading</span>
 		<h2 class="section-title">Watch It <span class="gradient-text">Execute</span></h2>
-		<p class="section-subtitle">Every trade runs through Ergo's smart contracts — transparent, atomic, final.</p>
+		<p class="section-subtitle">Every trade flows through Ergo smart contracts — transparent, trustless, automatic.</p>
 
 		<div class="terminal-window">
 			<div class="terminal-header">
@@ -100,7 +105,7 @@
 <style>
 	.terminal-section {
 		padding: var(--section-padding);
-		background: #050505;
+		background: #060a16;
 		position: relative;
 	}
 
@@ -114,11 +119,11 @@
 		margin-top: 3rem;
 		width: 100%;
 		max-width: 680px;
-		background: #0a0a0a;
+		background: #080c18;
 		border: 1px solid rgba(255, 255, 255, 0.08);
 		border-radius: 12px;
 		overflow: hidden;
-		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 87, 34, 0.03);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.03);
 	}
 
 	.terminal-header {
@@ -153,7 +158,7 @@
 
 	.terminal-body {
 		padding: 20px 24px;
-		min-height: 240px;
+		min-height: 340px;
 		font-family: var(--font-mono);
 		font-size: 0.85rem;
 		line-height: 1.9;
@@ -166,7 +171,7 @@
 	}
 
 	.terminal-line.success {
-		color: var(--orange-400);
+		color: var(--emerald-400);
 		font-weight: 600;
 	}
 
@@ -183,8 +188,9 @@
 
 	@media (max-width: 768px) {
 		.terminal-body {
-			font-size: 0.75rem;
+			font-size: 0.72rem;
 			padding: 16px;
+			min-height: 380px;
 		}
 	}
 

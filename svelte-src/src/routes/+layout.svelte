@@ -25,10 +25,9 @@
 		</a>
 		<div class="nav-links" class:open={menuOpen}>
 			<a href="#how-it-works" onclick={() => menuOpen = false}>How It Works</a>
-			<a href="#features" onclick={() => menuOpen = false}>Features</a>
-			<a href="#assets" onclick={() => menuOpen = false}>Assets</a>
+			<a href="#features" onclick={() => menuOpen = false}>Why Frontier</a>
 			<a href="https://github.com/ergo-frontier/exchange" target="_blank" rel="noopener" onclick={() => menuOpen = false}>GitHub</a>
-			<a href="#trade" class="nav-cta" onclick={() => menuOpen = false}>Start Trading</a>
+			<a href="https://ergo-frontier-exchange.pages.dev" class="nav-cta" target="_blank" rel="noopener" onclick={() => menuOpen = false}>Start Trading</a>
 		</div>
 		<button class="nav-burger" onclick={() => menuOpen = !menuOpen} aria-label="Toggle menu">
 			<span></span><span></span><span></span>
@@ -50,7 +49,7 @@
 	}
 
 	.navbar.scrolled {
-		background: rgba(8, 8, 8, 0.88);
+		background: rgba(10, 14, 26, 0.88);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
 		border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -103,18 +102,18 @@
 	}
 
 	.nav-cta {
-		background: rgba(255, 87, 34, 0.1);
-		color: var(--orange-400) !important;
-		border: 1px solid rgba(255, 87, 34, 0.25);
+		background: rgba(59, 130, 246, 0.1);
+		color: var(--blue-400) !important;
+		border: 1px solid rgba(59, 130, 246, 0.25);
 		padding: 8px 18px;
 		border-radius: 8px;
 		transition: all 0.2s !important;
 	}
 
 	.nav-cta:hover {
-		background: rgba(255, 87, 34, 0.18) !important;
-		color: var(--orange-400) !important;
-		border-color: rgba(255, 87, 34, 0.5) !important;
+		background: rgba(59, 130, 246, 0.18) !important;
+		color: var(--blue-400) !important;
+		border-color: rgba(59, 130, 246, 0.5) !important;
 	}
 
 	.nav-burger {
@@ -145,7 +144,7 @@
 			top: 60px;
 			left: 0;
 			right: 0;
-			background: rgba(8, 8, 8, 0.97);
+			background: rgba(10, 14, 26, 0.97);
 			backdrop-filter: blur(16px);
 			flex-direction: column;
 			padding: 24px;

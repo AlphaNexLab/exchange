@@ -3,24 +3,34 @@
 
 	let section: HTMLElement;
 	let progress = $state(0);
-	let currentStep = $derived(Math.min(Math.floor(progress * 3), 2));
+	let currentStep = $derived(Math.min(Math.floor(progress * 5), 4));
 	let prefersReducedMotion = $state(false);
 
 	const steps = [
 		{
-			title: 'You initiate a trade',
-			desc: 'Connect your Nautilus wallet and select your trading pair. Submit your order — no intermediary, no sign-up, no KYC.',
-			icon: 'initiate'
+			title: 'Seller lists 100 ERG at market price',
+			desc: 'A seller connects their Nautilus wallet and creates an offer — 100 ERG at $2.85 per ERG, accepting payment via Revolut.',
+			icon: 'list'
 		},
 		{
-			title: 'Smart contract locks funds in eUTXO',
-			desc: 'Your funds are locked into an ErgoScript smart contract using the extended UTXO model. Every condition is transparent and verifiable on-chain.',
+			title: 'Smart contract locks ERG in escrow',
+			desc: 'The seller\'s ERG is locked into an ErgoScript smart contract. No one can touch it until the trade resolves — not even the seller.',
 			icon: 'lock'
 		},
 		{
-			title: 'Atomic swap executes on-chain',
-			desc: 'The trade resolves atomically — both parties receive their assets simultaneously, or the transaction is reverted. Zero counterparty risk.',
-			icon: 'swap'
+			title: 'Buyer sends fiat via Revolut',
+			desc: 'The buyer sends $285.00 directly to the seller\'s Revolut account. Peer to peer. No intermediary handles the money.',
+			icon: 'payment'
+		},
+		{
+			title: '5 verifiers confirm payment',
+			desc: 'Five independent verification nodes check the fiat payment. When 3 out of 5 confirm, consensus is reached cryptographically.',
+			icon: 'verify'
+		},
+		{
+			title: 'ERG released to buyer\'s wallet',
+			desc: 'Payment verified. The smart contract automatically releases 100 ERG to the buyer\'s Nautilus wallet. Trade complete.',
+			icon: 'release'
 		}
 	];
 
@@ -47,7 +57,7 @@
 	<div class="sticky-container">
 		<div class="journey-header">
 			<span class="section-label">The Trade Flow</span>
-			<h2 class="section-title">How Your Trade Settles</h2>
+			<h2 class="section-title">How a P2P Trade Works</h2>
 		</div>
 
 		<!-- Progress bar -->
@@ -60,7 +70,7 @@
 					<div class="progress-line">
 						<div
 							class="progress-fill"
-							style="transform: scaleX({i < currentStep ? 1 : i === currentStep ? Math.max(0, (progress * 3 - i) % 1) : 0})"
+							style="transform: scaleX({i < currentStep ? 1 : i === currentStep ? Math.max(0, (progress * 5 - i) % 1) : 0})"
 						></div>
 					</div>
 				{/if}
@@ -72,11 +82,11 @@
 			{#each steps as step, i}
 				<div class="step-panel" class:active={i === currentStep} class:past={i < currentStep} class:future={i > currentStep}>
 					<div class="step-visual">
-						{#if step.icon === 'initiate'}
-							<div class="icon-container initiate-visual">
+						{#if step.icon === 'list'}
+							<div class="icon-container list-visual">
 								<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-									<path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-									<path d="M9 12l2 2 4-4" />
+									<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+									<path d="M8 12h8M12 8v8" />
 								</svg>
 								<div class="pulse-ring"></div>
 								<div class="pulse-ring delay"></div>
@@ -91,15 +101,36 @@
 									<div class="lock-glow"></div>
 								</div>
 							</div>
-						{:else if step.icon === 'swap'}
-							<div class="icon-container swap-visual">
-								<div class="swap-arrows">
-									<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-										<path d="M7 16V4m0 0L3 8m4-4l4 4" />
-										<path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
-									</svg>
+						{:else if step.icon === 'payment'}
+							<div class="icon-container payment-visual">
+								<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<rect x="2" y="5" width="20" height="14" rx="2" />
+									<path d="M2 10h20" />
+									<path d="M6 15h4" />
+									<path d="M14 15h4" />
+								</svg>
+								<div class="pulse-ring payment-pulse"></div>
+							</div>
+						{:else if step.icon === 'verify'}
+							<div class="icon-container verify-visual">
+								<div class="verifier-nodes">
+									{#each Array(5) as _, ni}
+										<div class="verifier-node" class:lit={i <= currentStep && ni <= Math.min(4, Math.floor((progress * 5 - 3) * 5))} style="--ni: {ni}">
+											<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+												<circle cx="12" cy="12" r="10" />
+												<path d="M9 12l2 2 4-4" />
+											</svg>
+										</div>
+									{/each}
 								</div>
-								{#if currentStep === 2}
+							</div>
+						{:else if step.icon === 'release'}
+							<div class="icon-container release-visual">
+								<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+									<polyline points="22 4 12 14.01 9 11.01" />
+								</svg>
+								{#if currentStep === 4}
 									<div class="success-particles">
 										{#each Array(8) as _, ci}
 											<div class="s-particle" style="--ci: {ci}; --cx: {Math.random() * 160 - 80}px; --cy: {Math.random() * -120 - 40}px; --cr: {Math.random() * 540}deg;"></div>
@@ -110,7 +141,7 @@
 						{/if}
 					</div>
 					<div class="step-text">
-						<span class="step-counter">Step {i + 1} of 3</span>
+						<span class="step-counter">Step {i + 1} of 5</span>
 						<h3>{step.title}</h3>
 						<p>{step.desc}</p>
 					</div>
@@ -123,8 +154,8 @@
 <style>
 	.scrollytelling {
 		position: relative;
-		height: 300vh;
-		background: #050505;
+		height: 500vh;
+		background: #060a16;
 	}
 
 	.scrollytelling.reduced {
@@ -166,7 +197,7 @@
 		gap: 0;
 		margin-bottom: 3rem;
 		width: 100%;
-		max-width: 320px;
+		max-width: 420px;
 	}
 
 	.progress-dot {
@@ -182,12 +213,12 @@
 	}
 
 	.progress-dot.active {
-		border-color: var(--orange-400);
+		border-color: var(--blue-400);
 	}
 
 	.progress-dot.current {
-		border-color: var(--orange-400);
-		box-shadow: 0 0 12px rgba(255, 109, 58, 0.4);
+		border-color: var(--blue-400);
+		box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
 	}
 
 	.dot-inner {
@@ -199,7 +230,7 @@
 	}
 
 	.progress-dot.active .dot-inner {
-		background: var(--orange-400);
+		background: var(--blue-400);
 	}
 
 	.progress-line {
@@ -211,7 +242,7 @@
 
 	.progress-fill {
 		height: 100%;
-		background: var(--orange-400);
+		background: var(--blue-400);
 		transform-origin: left;
 		transition: transform 0.3s ease;
 	}
@@ -260,9 +291,9 @@
 		position: relative;
 	}
 
-	/* Initiate icon */
-	.initiate-visual {
-		color: var(--orange-400);
+	/* List icon */
+	.list-visual {
+		color: var(--blue-400);
 		animation: floatIcon 3s ease-in-out infinite;
 	}
 
@@ -270,12 +301,16 @@
 		position: absolute;
 		inset: -8px;
 		border-radius: 50%;
-		border: 2px solid rgba(255, 109, 58, 0.3);
+		border: 2px solid rgba(59, 130, 246, 0.3);
 		animation: pulseRing 2s ease-out infinite;
 	}
 
 	.pulse-ring.delay {
 		animation-delay: 1s;
+	}
+
+	.pulse-ring.payment-pulse {
+		border-color: rgba(251, 191, 36, 0.3);
 	}
 
 	@keyframes pulseRing {
@@ -306,12 +341,47 @@
 		50% { opacity: 1; transform: scale(1.1); }
 	}
 
-	/* Swap icon */
-	.swap-visual {
-		color: var(--orange-400);
+	/* Payment icon */
+	.payment-visual {
+		color: var(--amber-400);
+		animation: floatIcon 2.8s ease-in-out infinite;
 	}
 
-	.swap-arrows {
+	/* Verify icon */
+	.verify-visual {
+		color: var(--blue-400);
+	}
+
+	.verifier-nodes {
+		display: flex;
+		gap: 8px;
+		animation: floatIcon 3s ease-in-out infinite;
+	}
+
+	.verifier-node {
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: rgba(59, 130, 246, 0.1);
+		border: 1px solid rgba(59, 130, 246, 0.2);
+		color: rgba(59, 130, 246, 0.4);
+		transition: all 0.4s ease;
+		transition-delay: calc(var(--ni) * 0.15s);
+	}
+
+	.verifier-node.lit {
+		background: rgba(16, 185, 129, 0.15);
+		border-color: rgba(16, 185, 129, 0.4);
+		color: var(--emerald-400);
+		box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+	}
+
+	/* Release icon */
+	.release-visual {
+		color: var(--emerald-400);
 		animation: floatIcon 2s ease-in-out infinite;
 	}
 
@@ -332,8 +402,8 @@
 		animation-delay: calc(var(--ci) * 0.1s);
 	}
 
-	.s-particle:nth-child(odd) { background: var(--orange-400); }
-	.s-particle:nth-child(even) { background: var(--amber-400); }
+	.s-particle:nth-child(odd) { background: var(--blue-400); }
+	.s-particle:nth-child(even) { background: var(--emerald-400); }
 
 	@keyframes confettiBurst {
 		0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
@@ -352,7 +422,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.15em;
-		color: var(--orange-400);
+		color: var(--blue-400);
 		opacity: 0.7;
 	}
 
@@ -390,7 +460,21 @@
 		}
 
 		.steps-viewport {
-			height: 280px;
+			height: 320px;
+		}
+
+		.verifier-nodes {
+			gap: 4px;
+		}
+
+		.verifier-node {
+			width: 28px;
+			height: 28px;
+		}
+
+		.verifier-node svg {
+			width: 18px;
+			height: 18px;
 		}
 	}
 </style>
