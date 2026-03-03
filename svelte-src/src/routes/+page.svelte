@@ -3,6 +3,17 @@
 	import ParticleNetwork from '$lib/ParticleNetwork.svelte';
 	import Scrollytelling from '$lib/Scrollytelling.svelte';
 	import AnimatedCounter from '$lib/AnimatedCounter.svelte';
+	import AuroraBackground from '$lib/AuroraBackground.svelte';
+	import TiltCard from '$lib/TiltCard.svelte';
+	import MagneticButton from '$lib/MagneticButton.svelte';
+	import PriceTicker from '$lib/PriceTicker.svelte';
+	import CandlestickChart from '$lib/CandlestickChart.svelte';
+	import TerminalSection from '$lib/TerminalSection.svelte';
+	import TokenShowcase from '$lib/TokenShowcase.svelte';
+
+	// Hero text reveal — word by word
+	const heroWords1 = 'Trade on the Edge of'.split(' ');
+	const heroWords2 = 'Decentralization';
 </script>
 
 <svelte:head>
@@ -18,34 +29,52 @@
 </svelte:head>
 
 <!-- ============================================ -->
+<!-- PRICE TICKER                                 -->
+<!-- ============================================ -->
+<PriceTicker />
+
+<!-- ============================================ -->
 <!-- HERO SECTION                                 -->
 <!-- ============================================ -->
 <section class="hero">
 	<ParticleNetwork />
+	<AuroraBackground />
 	<div class="hero-glow"></div>
 	<div class="hero-glow-secondary"></div>
 	<div class="hero-content container">
-		<div class="hero-badge">
-			<span class="badge-dot"></span>
-			Built on Ergo Blockchain
-		</div>
-		<h1>
-			Trade on the Edge of<br /><span class="gradient-text">Decentralization</span>
-		</h1>
-		<p class="hero-description">
-			Ergo Frontier Exchange is a non-custodial, peer-to-peer decentralized exchange.
-			Trade directly from your wallet with atomic on-chain settlement — no intermediaries,
-			no KYC, no compromises.
-		</p>
-		<div class="hero-actions">
-			<a href="#trade" class="btn btn-primary">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4" /><path d="M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
-				Start Trading
-			</a>
-			<a href="#how-it-works" class="btn btn-secondary">
-				Learn More
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5" /></svg>
-			</a>
+		<div class="hero-main">
+			<div class="hero-text-side">
+				<div class="hero-badge">
+					<span class="badge-dot"></span>
+					Built on Ergo Blockchain
+				</div>
+				<h1 class="hero-title-reveal">
+					{#each heroWords1 as word, i}
+						<span class="word-wrap"><span class="word-inner" style="animation-delay: {i * 80}ms">{word}</span></span>
+						{' '}
+					{/each}
+					<br />
+					<span class="word-wrap"><span class="word-inner gradient-text" style="animation-delay: {heroWords1.length * 80}ms">{heroWords2}</span></span>
+				</h1>
+				<p class="hero-description">
+					Ergo Frontier Exchange is a non-custodial, peer-to-peer decentralized exchange.
+					Trade directly from your wallet with atomic on-chain settlement — no intermediaries,
+					no KYC, no compromises.
+				</p>
+				<div class="hero-actions">
+					<MagneticButton href="#trade" class="btn btn-primary magnetic-btn">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4" /><path d="M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
+						Start Trading
+					</MagneticButton>
+					<MagneticButton href="#how-it-works" class="btn btn-secondary magnetic-btn">
+						Learn More
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5" /></svg>
+					</MagneticButton>
+				</div>
+			</div>
+			<div class="hero-chart-side">
+				<CandlestickChart />
+			</div>
 		</div>
 	</div>
 </section>
@@ -80,47 +109,53 @@
 
 		<div class="steps-grid">
 			<ScrollAnimation delay={0} animation="slide-up">
-				<div class="card step-card">
-					<div class="step-number">1</div>
-					<div class="step-icon">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<rect x="2" y="6" width="20" height="14" rx="2" />
-							<path d="M2 10h20" />
-							<path d="M6 14h4" />
-						</svg>
+				<TiltCard>
+					<div class="card step-card gradient-border-card">
+						<div class="step-number">1</div>
+						<div class="step-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<rect x="2" y="6" width="20" height="14" rx="2" />
+								<path d="M2 10h20" />
+								<path d="M6 14h4" />
+							</svg>
+						</div>
+						<h3>Connect Wallet</h3>
+						<p>Link your Nautilus wallet in one click. Your keys stay with you — always.</p>
 					</div>
-					<h3>Connect Wallet</h3>
-					<p>Link your Nautilus wallet in one click. Your keys stay with you — always.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={150} animation="slide-up">
-				<div class="card step-card">
-					<div class="step-number">2</div>
-					<div class="step-icon">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<circle cx="9" cy="12" r="4" />
-							<circle cx="15" cy="12" r="4" />
-							<path d="M12 8v8" opacity="0.5" />
-						</svg>
+				<TiltCard>
+					<div class="card step-card gradient-border-card">
+						<div class="step-number">2</div>
+						<div class="step-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<circle cx="9" cy="12" r="4" />
+								<circle cx="15" cy="12" r="4" />
+								<path d="M12 8v8" opacity="0.5" />
+							</svg>
+						</div>
+						<h3>Select Pair</h3>
+						<p>Choose from ERG, SigUSD, SigRSV and other Ergo tokens. Set your price.</p>
 					</div>
-					<h3>Select Pair</h3>
-					<p>Choose from ERG, SigUSD, SigRSV and other Ergo tokens. Set your price.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={300} animation="slide-up">
-				<div class="card step-card">
-					<div class="step-number">3</div>
-					<div class="step-icon">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-							<polyline points="22 4 12 14.01 9 11.01" />
-						</svg>
+				<TiltCard>
+					<div class="card step-card gradient-border-card">
+						<div class="step-number">3</div>
+						<div class="step-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+								<polyline points="22 4 12 14.01 9 11.01" />
+							</svg>
+						</div>
+						<h3>Execute Trade</h3>
+						<p>Confirm and your trade settles on-chain. Atomic, trustless, final.</p>
 					</div>
-					<h3>Execute Trade</h3>
-					<p>Confirm and your trade settles on-chain. Atomic, trustless, final.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 		</div>
 
@@ -150,87 +185,99 @@
 
 		<div class="features-grid">
 			<ScrollAnimation delay={0}>
-				<div class="card feature-card">
-					<div class="feature-icon">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+							</svg>
+						</div>
+						<h3>Non-Custodial</h3>
+						<p>Your assets never leave your wallet until settlement. No trust required.</p>
 					</div>
-					<h3>Non-Custodial</h3>
-					<p>Your assets never leave your wallet until settlement. No trust required.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={100}>
-				<div class="card feature-card">
-					<div class="feature-icon amber">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<rect x="2" y="2" width="8" height="8" rx="1" />
-							<rect x="14" y="2" width="8" height="8" rx="1" />
-							<rect x="2" y="14" width="8" height="8" rx="1" />
-							<rect x="14" y="14" width="8" height="8" rx="1" />
-							<line x1="10" y1="6" x2="14" y2="6" />
-							<line x1="6" y1="10" x2="6" y2="14" />
-							<line x1="18" y1="10" x2="18" y2="14" />
-							<line x1="10" y1="18" x2="14" y2="18" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon amber">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<rect x="2" y="2" width="8" height="8" rx="1" />
+								<rect x="14" y="2" width="8" height="8" rx="1" />
+								<rect x="2" y="14" width="8" height="8" rx="1" />
+								<rect x="14" y="14" width="8" height="8" rx="1" />
+								<line x1="10" y1="6" x2="14" y2="6" />
+								<line x1="6" y1="10" x2="6" y2="14" />
+								<line x1="18" y1="10" x2="18" y2="14" />
+								<line x1="10" y1="18" x2="14" y2="18" />
+							</svg>
+						</div>
+						<h3>eUTXO Model</h3>
+						<p>Leverages Ergo's extended UTXO for parallel processing and deterministic transactions.</p>
 					</div>
-					<h3>eUTXO Model</h3>
-					<p>Leverages Ergo's extended UTXO for parallel processing and deterministic transactions.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={200}>
-				<div class="card feature-card">
-					<div class="feature-icon">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-							<circle cx="9" cy="7" r="4" />
-							<path d="M23 21v-2a4 4 0 00-3-3.87" />
-							<path d="M16 3.13a4 4 0 010 7.75" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+								<circle cx="9" cy="7" r="4" />
+								<path d="M23 21v-2a4 4 0 00-3-3.87" />
+								<path d="M16 3.13a4 4 0 010 7.75" />
+							</svg>
+						</div>
+						<h3>No KYC</h3>
+						<p>Trade freely without identity verification. Your privacy is non-negotiable.</p>
 					</div>
-					<h3>No KYC</h3>
-					<p>Trade freely without identity verification. Your privacy is non-negotiable.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={100}>
-				<div class="card feature-card">
-					<div class="feature-icon amber">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon amber">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
+							</svg>
+						</div>
+						<h3>Open Source</h3>
+						<p>Every line of code is public. Audit it, fork it, improve it.</p>
 					</div>
-					<h3>Open Source</h3>
-					<p>Every line of code is public. Audit it, fork it, improve it.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={200}>
-				<div class="card feature-card">
-					<div class="feature-icon">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+							</svg>
+						</div>
+						<h3>Low Fees</h3>
+						<p>Ergo's efficient PoW chain keeps transaction costs minimal. More value for you.</p>
 					</div>
-					<h3>Low Fees</h3>
-					<p>Ergo's efficient PoW chain keeps transaction costs minimal. More value for you.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 
 			<ScrollAnimation delay={300}>
-				<div class="card feature-card">
-					<div class="feature-icon amber">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<rect x="2" y="6" width="20" height="14" rx="2" />
-							<path d="M2 10h20" />
-							<circle cx="12" cy="16" r="2" />
-						</svg>
+				<TiltCard>
+					<div class="card feature-card gradient-border-card">
+						<div class="feature-icon amber">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<rect x="2" y="6" width="20" height="14" rx="2" />
+								<path d="M2 10h20" />
+								<circle cx="12" cy="16" r="2" />
+							</svg>
+						</div>
+						<h3>Nautilus Support</h3>
+						<p>Native integration with Nautilus — the most popular Ergo wallet.</p>
 					</div>
-					<h3>Nautilus Support</h3>
-					<p>Native integration with Nautilus — the most popular Ergo wallet.</p>
-				</div>
+				</TiltCard>
 			</ScrollAnimation>
 		</div>
 	</div>
@@ -246,63 +293,16 @@
 <div class="section-divider"></div>
 
 <!-- ============================================ -->
-<!-- SUPPORTED ASSETS                             -->
+<!-- TOKEN SHOWCASE (Horizontal Scroll)           -->
 <!-- ============================================ -->
-<section id="assets" class="section" style="scroll-margin-top: 80px;">
-	<div class="container">
-		<ScrollAnimation>
-			<span class="section-label">Token Support</span>
-			<h2 class="section-title">Supported Assets</h2>
-			<p class="section-subtitle">Trade the core Ergo ecosystem tokens with more coming soon.</p>
-		</ScrollAnimation>
+<TokenShowcase />
 
-		<div class="assets-grid">
-			<ScrollAnimation delay={0} animation="scale">
-				<div class="card asset-card">
-					<div class="asset-icon erg">
-						<span class="asset-symbol">Σ</span>
-					</div>
-					<h3>ERG</h3>
-					<p class="asset-desc">Native Ergo token</p>
-					<span class="asset-badge live">Live</span>
-				</div>
-			</ScrollAnimation>
+<div class="section-divider"></div>
 
-			<ScrollAnimation delay={100} animation="scale">
-				<div class="card asset-card">
-					<div class="asset-icon sigusd">
-						<span class="asset-symbol">$</span>
-					</div>
-					<h3>SigUSD</h3>
-					<p class="asset-desc">Algorithmic stablecoin</p>
-					<span class="asset-badge live">Live</span>
-				</div>
-			</ScrollAnimation>
-
-			<ScrollAnimation delay={200} animation="scale">
-				<div class="card asset-card">
-					<div class="asset-icon sigrsv">
-						<span class="asset-symbol">R</span>
-					</div>
-					<h3>SigRSV</h3>
-					<p class="asset-desc">Reserve token</p>
-					<span class="asset-badge live">Live</span>
-				</div>
-			</ScrollAnimation>
-
-			<ScrollAnimation delay={300} animation="scale">
-				<div class="card asset-card coming-soon">
-					<div class="asset-icon more">
-						<span class="asset-symbol">+</span>
-					</div>
-					<h3>More Coming</h3>
-					<p class="asset-desc">Community tokens</p>
-					<span class="asset-badge soon">Soon</span>
-				</div>
-			</ScrollAnimation>
-		</div>
-	</div>
-</section>
+<!-- ============================================ -->
+<!-- TERMINAL STATS SECTION                       -->
+<!-- ============================================ -->
+<TerminalSection />
 
 <div class="section-divider"></div>
 
@@ -315,10 +315,10 @@
 			<div class="cta-glow"></div>
 			<h2 class="cta-title">Ready to <span class="gradient-text">Trade</span>?</h2>
 			<p class="cta-subtitle">Join the frontier of decentralized finance on Ergo.</p>
-			<a href="https://github.com/ergo-frontier/exchange" target="_blank" rel="noopener" class="btn btn-cta">
+			<MagneticButton href="https://github.com/ergo-frontier/exchange" class="btn btn-cta magnetic-btn" target="_blank" rel="noopener">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4" /><path d="M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
 				Launch Exchange
-			</a>
+			</MagneticButton>
 		</ScrollAnimation>
 	</div>
 </section>
@@ -385,10 +385,32 @@
 	.hero-content {
 		position: relative;
 		z-index: 2;
-		text-align: center;
 		padding: 120px 24px 80px;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+	}
+
+	.hero-main {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 60px;
+		width: 100%;
+	}
+
+	.hero-text-side {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		text-align: left;
+		flex: 1;
+		max-width: 650px;
+	}
+
+	.hero-chart-side {
+		flex-shrink: 0;
+		display: flex;
 		align-items: center;
 	}
 
@@ -420,9 +442,32 @@
 		50% { opacity: 0.5; transform: scale(0.8); }
 	}
 
-	.hero h1 {
+	/* ===== HERO TEXT REVEAL ===== */
+	.hero-title-reveal {
 		margin-bottom: 1.5rem;
 		max-width: 800px;
+	}
+
+	.word-wrap {
+		display: inline-block;
+		overflow: hidden;
+		vertical-align: bottom;
+	}
+
+	.word-inner {
+		display: inline-block;
+		animation: wordReveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+	}
+
+	@keyframes wordReveal {
+		0% {
+			transform: translateY(110%);
+			opacity: 0;
+		}
+		100% {
+			transform: translateY(0);
+			opacity: 1;
+		}
 	}
 
 	.hero-description {
@@ -436,7 +481,6 @@
 		display: flex;
 		gap: 16px;
 		flex-wrap: wrap;
-		justify-content: center;
 	}
 
 	/* ===== STATS BAR ===== */
@@ -509,6 +553,42 @@
 		display: none;
 	}
 
+	/* ===== ANIMATED GRADIENT BORDERS ===== */
+	.gradient-border-card {
+		position: relative;
+	}
+
+	.gradient-border-card::after {
+		content: '';
+		position: absolute;
+		inset: -1px;
+		border-radius: var(--radius-lg);
+		padding: 1px;
+		background: conic-gradient(from var(--border-angle, 0deg), transparent 40%, var(--orange-400) 50%, var(--amber-400) 55%, transparent 60%);
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.4s;
+	}
+
+	.gradient-border-card:hover::after {
+		opacity: 1;
+		animation: borderSpin 3s linear infinite;
+	}
+
+	@keyframes borderSpin {
+		to { --border-angle: 360deg; }
+	}
+
+	/* Register CSS custom property for animation */
+	@property --border-angle {
+		syntax: '<angle>';
+		initial-value: 0deg;
+		inherits: false;
+	}
+
 	/* ===== FEATURES ===== */
 	.features-grid {
 		display: grid;
@@ -561,117 +641,6 @@
 		font-size: 0.92rem;
 	}
 
-	/* ===== ASSETS ===== */
-	.assets-grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 24px;
-		width: 100%;
-		margin-top: 3rem;
-	}
-
-	.asset-card {
-		text-align: center;
-		padding: 36px 24px;
-		position: relative;
-	}
-
-	.asset-icon {
-		width: 64px;
-		height: 64px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin: 0 auto 1.25rem;
-		transition: all 0.3s;
-	}
-
-	.asset-symbol {
-		font-family: var(--font-mono);
-		font-size: 1.5rem;
-		font-weight: 700;
-	}
-
-	.asset-icon.erg {
-		background: rgba(255, 87, 34, 0.12);
-		border: 2px solid rgba(255, 87, 34, 0.25);
-		color: var(--orange-400);
-	}
-
-	.asset-icon.sigusd {
-		background: rgba(34, 197, 94, 0.12);
-		border: 2px solid rgba(34, 197, 94, 0.25);
-		color: #4ade80;
-	}
-
-	.asset-icon.sigrsv {
-		background: rgba(251, 191, 36, 0.12);
-		border: 2px solid rgba(251, 191, 36, 0.25);
-		color: var(--amber-400);
-	}
-
-	.asset-icon.more {
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px dashed rgba(255, 255, 255, 0.15);
-		color: var(--text-muted);
-	}
-
-	.asset-card:hover .asset-icon {
-		transform: scale(1.08);
-	}
-
-	.asset-card:hover .asset-icon.erg {
-		box-shadow: 0 0 24px rgba(255, 87, 34, 0.25);
-	}
-
-	.asset-card:hover .asset-icon.sigusd {
-		box-shadow: 0 0 24px rgba(34, 197, 94, 0.25);
-	}
-
-	.asset-card:hover .asset-icon.sigrsv {
-		box-shadow: 0 0 24px rgba(251, 191, 36, 0.25);
-	}
-
-	.asset-card h3 {
-		font-family: var(--font-mono);
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.asset-desc {
-		font-size: 0.85rem;
-		color: var(--text-muted);
-		margin-bottom: 1rem;
-	}
-
-	.asset-badge {
-		display: inline-block;
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		padding: 4px 10px;
-		border-radius: 100px;
-	}
-
-	.asset-badge.live {
-		background: rgba(34, 197, 94, 0.1);
-		color: #4ade80;
-		border: 1px solid rgba(34, 197, 94, 0.2);
-	}
-
-	.asset-badge.soon {
-		background: rgba(255, 255, 255, 0.05);
-		color: var(--text-muted);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.coming-soon {
-		opacity: 0.7;
-	}
-
 	/* ===== CTA ===== */
 	.cta-section {
 		padding: 160px 24px;
@@ -714,7 +683,8 @@
 		z-index: 1;
 	}
 
-	.btn-cta {
+	/* btn-cta styles applied via global + magnetic wrapper */
+	:global(.btn-cta) {
 		display: inline-flex;
 		align-items: center;
 		gap: 10px;
@@ -734,8 +704,7 @@
 		z-index: 1;
 	}
 
-	.btn-cta:hover {
-		transform: translateY(-3px) scale(1.02);
+	:global(.btn-cta:hover) {
 		box-shadow: 0 0 50px rgba(255, 87, 34, 0.4), 0 0 100px rgba(255, 87, 34, 0.15);
 		color: #000;
 	}
@@ -808,8 +777,17 @@
 			grid-template-columns: repeat(2, 1fr);
 		}
 
-		.assets-grid {
-			grid-template-columns: repeat(2, 1fr);
+		.hero-chart-side {
+			display: none;
+		}
+
+		.hero-text-side {
+			align-items: center;
+			text-align: center;
+		}
+
+		.hero-actions {
+			justify-content: center;
 		}
 	}
 
@@ -818,7 +796,7 @@
 			padding: 100px 16px 60px;
 		}
 
-		.hero h1 {
+		.hero-title-reveal {
 			font-size: clamp(2rem, 8vw, 3rem);
 		}
 
@@ -843,16 +821,11 @@
 			grid-template-columns: 1fr;
 		}
 
-		.assets-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: 16px;
-		}
-
 		.cta-section {
 			padding: 100px 16px;
 		}
 
-		.btn-cta {
+		:global(.btn-cta) {
 			padding: 16px 32px;
 			font-size: 1rem;
 		}
@@ -863,18 +836,27 @@
 	}
 
 	@media (max-width: 480px) {
-		.assets-grid {
-			grid-template-columns: 1fr;
-		}
-
 		.hero-actions {
 			flex-direction: column;
 			width: 100%;
 		}
 
-		.hero-actions .btn {
+		:global(.hero-actions .magnetic-btn) {
 			width: 100%;
 			justify-content: center;
+		}
+	}
+
+	/* ===== REDUCED MOTION ===== */
+	@media (prefers-reduced-motion: reduce) {
+		.word-inner {
+			animation: none !important;
+			transform: none;
+			opacity: 1;
+		}
+
+		.gradient-border-card::after {
+			animation: none !important;
 		}
 	}
 </style>
