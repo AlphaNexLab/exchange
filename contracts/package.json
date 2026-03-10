@@ -1,0 +1,25 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test mocha",
+    "deploy:sepolia": "hardhat run scripts/deploy/deployP2PEscrow.ts --network sepolia",
+    "deploy:local": "hardhat run scripts/deploy/deployP2PEscrow.ts --network hardhatMainnet",
+    "abi:export": "node scripts/utils/exportAbi.ts"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.7",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.2",
+    "chai": "^6.2.2",
+    "dotenv": "^17.4.2",
+    "ethers": "^6.14.0",
+    "hardhat": "^3.12.0",
+    "mocha": "^11.0.0",
+    "typescript": "~5.8.0"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules
+cache
+artifacts
+types
+typechain-types
+coverage
+.env
+dist
+ignition/deployments
