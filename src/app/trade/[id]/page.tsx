@@ -1,13 +1,14 @@
-import { MOCK_OFFERS } from '@/lib/constants';
-import TradePageClient from '@/components/trade-page-client';
+import { redirect } from "next/navigation";
 
-// Required for static export
+/** Legacy path → query-based trade resume (static-export friendly). */
 export function generateStaticParams() {
-  return MOCK_OFFERS.map((offer) => ({
-    id: offer.id,
-  }));
+  return [{ id: "demo-1" }, { id: "demo-2" }, { id: "demo-3" }];
 }
 
-export default function TradePage() {
-  return <TradePageClient />;
+export default function LegacyTradeRedirect({
+  params,
+}: {
+  params: { id: string };
+}) {
+  redirect(`/trade/?tradeId=${encodeURIComponent(params.id)}`);
 }

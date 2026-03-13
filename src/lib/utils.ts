@@ -23,12 +23,12 @@ export function formatNumber(num: number): string {
   return num.toString()
 }
 
-export function formatERG(amount: number): string {
-  return `${amount.toLocaleString()} ERG`
+export function formatANX(amount: number): string {
+  return `${amount.toLocaleString()} ANX`
 }
 
-export function calculateTotal(amount: number, pricePerErg: number, networkFee = 0.01): number {
-  const subtotal = amount * pricePerErg
+export function calculateTotal(amount: number, pricePerAnx: number, networkFee = 0.01): number {
+  const subtotal = amount * pricePerAnx
   return subtotal * (1 + networkFee)
 }
 

@@ -26,8 +26,8 @@ import {
 } from 'lucide-react';
 
 // ── Calculator Logic ──────────────────────────────────────────────────────
-const ERG_PRICE_USD = 0.42;
-const BASE_MONTHLY_ERG = 8;
+const ANX_PRICE_USD = 0.42;
+const BASE_MONTHLY_ANX = 8;
 const CPU_WEIGHT = 0.35;
 const RAM_WEIGHT = 0.30;
 const NET_WEIGHT = 0.15;
@@ -72,7 +72,7 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
       {label && (
         <div className="text-xs text-slate-500 mb-1 font-mono">{label}</div>
       )}
-      <div className="bg-space-900/80 border border-slate-700/40 rounded-xl p-4 font-mono text-sm text-teal-400 overflow-x-auto">
+      <div className="bg-space-900/80 border border-slate-700/40 rounded-xl p-4 font-mono text-sm text-amber-400 overflow-x-auto">
         <pre className="whitespace-pre-wrap break-all">{code}</pre>
         <button
           onClick={handleCopy}
@@ -144,10 +144,10 @@ export default function NodesPage() {
     uptimeScore * UPTIME_WEIGHT;
 
   const finalScore = hasGpu ? compositeScore * GPU_BONUS_FACTOR : compositeScore;
-  const monthlyErg = BASE_MONTHLY_ERG * finalScore;
-  const dailyErg = monthlyErg / 30;
-  const yearlyErg = monthlyErg * 12;
-  const monthlyUsd = monthlyErg * ERG_PRICE_USD;
+  const monthlyAnx = BASE_MONTHLY_ANX * finalScore;
+  const dailyErg = monthlyAnx / 30;
+  const yearlyErg = monthlyAnx * 12;
+  const monthlyUsd = monthlyAnx * ANX_PRICE_USD;
   const competitivePct = Math.min(100, Math.round((finalScore / 2.5) * 100));
 
   const uptimeOptions = [
@@ -176,14 +176,14 @@ export default function NodesPage() {
                 </span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-teal-300 bg-clip-text text-transparent tracking-tight leading-none">
-                EARN ERG BY POWERING
+              <h1 className="text-5xl md:text-7xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-amber-500 bg-clip-text text-transparent tracking-tight leading-none">
+                EARN ANX BY POWERING
                 <br />
                 <span className="text-amber-400">DECENTRALIZED AI</span>
               </h1>
 
               <p className="text-xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Run a Celaut Nodo. Share your spare compute. Get paid in ERG — trustlessly, on-chain.
+                Run a Celaut Nodo. Share your spare compute. Get paid in ANX — trustlessly, on-chain.
                 Think of it as Airbnb for CPU &amp; RAM, powered by the Ergo blockchain.
               </p>
 
@@ -212,7 +212,7 @@ export default function NodesPage() {
                 style={{ right: '20%', bottom: '10%' }}
               />
               <motion.div
-                className="absolute w-72 h-72 rounded-full opacity-10 blur-3xl bg-teal-400"
+                className="absolute w-72 h-72 rounded-full opacity-10 blur-3xl bg-amber-400"
                 animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.12, 0.08] }}
                 transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ left: '15%', top: '20%' }}
@@ -278,7 +278,7 @@ export default function NodesPage() {
                 EARNING CALCULATOR
               </h2>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                Estimate how much ERG you can earn based on your hardware
+                Estimate how much ANX you can earn based on your hardware
               </p>
             </motion.div>
 
@@ -311,7 +311,7 @@ export default function NodesPage() {
                       className="w-full accent-amber-500 h-1.5 rounded-full bg-slate-700 appearance-none cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
                         [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-500 
-                        [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,160,82,0.5)] [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(115,66,220,0.5)] [&::-webkit-slider-thumb]:cursor-pointer
                         [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full 
                         [&::-moz-range-thumb]:bg-amber-500 [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:cursor-pointer"
                     />
@@ -341,7 +341,7 @@ export default function NodesPage() {
                       className="w-full accent-amber-500 h-1.5 rounded-full bg-slate-700 appearance-none cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
                         [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-500 
-                        [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(212,160,82,0.5)] [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(115,66,220,0.5)] [&::-webkit-slider-thumb]:cursor-pointer
                         [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full 
                         [&::-moz-range-thumb]:bg-amber-500 [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:cursor-pointer"
                     />
@@ -413,10 +413,10 @@ export default function NodesPage() {
                         Monthly Estimate
                       </div>
                       <div className="text-4xl font-bold text-amber-400 tabular-nums">
-                        {monthlyErg.toFixed(1)}
-                        <span className="text-lg text-slate-500 ml-1">ERG</span>
+                        {monthlyAnx.toFixed(1)}
+                        <span className="text-lg text-slate-500 ml-1">ANX</span>
                       </div>
-                      <div className="text-sm text-teal-400 mt-1">
+                      <div className="text-sm text-amber-400 mt-1">
                         ≈ ${monthlyUsd.toFixed(2)} USD/month
                       </div>
                     </div>
@@ -428,7 +428,7 @@ export default function NodesPage() {
                         </div>
                         <div className="text-2xl font-bold text-amber-400 tabular-nums">
                           {dailyErg.toFixed(2)}
-                          <span className="text-sm text-slate-500 ml-1">ERG</span>
+                          <span className="text-sm text-slate-500 ml-1">ANX</span>
                         </div>
                       </div>
                       <div className="bg-space-900/50 rounded-xl p-4 text-center">
@@ -437,7 +437,7 @@ export default function NodesPage() {
                         </div>
                         <div className="text-2xl font-bold text-amber-400 tabular-nums">
                           {yearlyErg.toFixed(0)}
-                          <span className="text-sm text-slate-500 ml-1">ERG</span>
+                          <span className="text-sm text-slate-500 ml-1">ANX</span>
                         </div>
                       </div>
                     </div>
@@ -446,11 +446,11 @@ export default function NodesPage() {
                     <div>
                       <div className="flex justify-between text-xs mb-2">
                         <span className="text-slate-500">Node Competitiveness</span>
-                        <span className="text-teal-400 font-bold">{competitivePct}%</span>
+                        <span className="text-amber-400 font-bold">{competitivePct}%</span>
                       </div>
                       <div className="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-amber-500 to-teal-400 transition-all duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all duration-500"
                           style={{ width: `${competitivePct}%` }}
                         />
                       </div>
@@ -483,7 +483,7 @@ export default function NodesPage() {
                 THREE STEPS TO START EARNING
               </h2>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                From zero to earning ERG in under 30 minutes
+                From zero to earning ANX in under 30 minutes
               </p>
             </motion.div>
 
@@ -495,7 +495,7 @@ export default function NodesPage() {
               transition={{ delay: 0.1, duration: 0.6 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-space-900 font-bold text-lg shadow-lg flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
                   1
                 </div>
                 <div>
@@ -503,7 +503,7 @@ export default function NodesPage() {
                     GET AN ERGO WALLET
                   </h3>
                   <p className="text-slate-400 text-sm">
-                    You need a wallet to receive ERG earnings — takes 2 minutes
+                    You need a wallet to receive ANX earnings — takes 2 minutes
                   </p>
                 </div>
               </div>
@@ -544,27 +544,27 @@ export default function NodesPage() {
                     {/* Desktop */}
                     <div className="bg-space-900/40 rounded-xl p-5 border border-slate-700/30">
                       <div className="flex items-center gap-3 mb-3">
-                        <Wallet className="w-5 h-5 text-teal-400" />
+                        <Wallet className="w-5 h-5 text-amber-400" />
                         <h4 className="font-semibold text-slate-200">
                           💻 On Computer
                         </h4>
                       </div>
                       <ul className="space-y-2 text-sm text-slate-400">
                         <li className="flex items-start gap-2">
-                          <ChevronRight className="w-4 h-4 text-teal-500 flex-shrink-0 mt-0.5" />
+                          <ChevronRight className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                           <span>
                             Install <strong className="text-slate-300">Nautilus Wallet</strong>{' '}
                             browser extension
                           </span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <ChevronRight className="w-4 h-4 text-teal-500 flex-shrink-0 mt-0.5" />
+                          <ChevronRight className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                           <span>
                             Available for Chrome, Firefox, Brave, Edge
                           </span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <ChevronRight className="w-4 h-4 text-teal-500 flex-shrink-0 mt-0.5" />
+                          <ChevronRight className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                           <span>Create wallet → write down your 15-word phrase on <strong className="text-amber-300">paper</strong></span>
                         </li>
                       </ul>
@@ -595,7 +595,7 @@ export default function NodesPage() {
               transition={{ delay: 0.2, duration: 0.6 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-space-900 font-bold text-lg shadow-lg flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
                   2
                 </div>
                 <div>
@@ -711,17 +711,17 @@ java -jar -Xmx4G ergo-6.0.2.jar --mainnet -c ergo.conf`}
                       href="http://127.0.0.1:9053/swagger"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-teal-400 hover:text-teal-300 underline decoration-teal-500/30"
+                      className="text-amber-400 hover:text-amber-300 underline decoration-amber-500/30"
                     >
                       http://127.0.0.1:9053/swagger
                     </a>{' '}
                     to generate a secure API key hash and replace it in your{' '}
-                    <code className="bg-space-900/60 px-1 rounded text-teal-400">ergo.conf</code>.
+                    <code className="bg-space-900/60 px-1 rounded text-amber-400">ergo.conf</code>.
                   </div>
 
                   <div className="text-xs text-slate-500 mt-2">
                     Verify at{' '}
-                    <code className="bg-space-900/60 px-1.5 py-0.5 rounded text-teal-400">
+                    <code className="bg-space-900/60 px-1.5 py-0.5 rounded text-amber-400">
                       http://127.0.0.1:9053/panel
                     </code>{' '}
                     — initial sync takes several hours.
@@ -738,7 +738,7 @@ java -jar -Xmx4G ergo-6.0.2.jar --mainnet -c ergo.conf`}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-space-900 font-bold text-lg shadow-lg flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
                   3
                 </div>
                 <div>
@@ -746,7 +746,7 @@ java -jar -Xmx4G ergo-6.0.2.jar --mainnet -c ergo.conf`}
                     RUN CELAUT NODO
                   </h3>
                   <p className="text-slate-400 text-sm">
-                    Start earning ERG by sharing your compute resources
+                    Start earning ANX by sharing your compute resources
                   </p>
                 </div>
               </div>
@@ -786,7 +786,7 @@ nodo logs     # View logs`}
                   {/* Connectivity */}
                   <div className="bg-space-900/40 rounded-xl p-4 border border-slate-700/30 mt-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Wifi className="w-4 h-4 text-teal-400" />
+                      <Wifi className="w-4 h-4 text-amber-400" />
                       <h4 className="text-sm font-semibold text-slate-300">
                         Network Connectivity
                       </h4>
@@ -794,7 +794,7 @@ nodo logs     # View logs`}
                     <div className="text-xs text-slate-400 space-y-1">
                       <p>
                         <strong className="text-slate-300">Best:</strong> Forward a port on your router and set{' '}
-                        <code className="bg-space-900/60 px-1 rounded text-teal-400">
+                        <code className="bg-space-900/60 px-1 rounded text-amber-400">
                           GATEWAY_PORT
                         </code>{' '}
                         in config.
@@ -899,7 +899,7 @@ nodo logs     # View logs`}
                     </a>
                     <Link href="/exchange">
                       <Button variant="outline" size="lg" className="text-lg px-8 py-4 h-auto">
-                        Trade ERG
+                        Trade ANX
                       </Button>
                     </Link>
                   </div>

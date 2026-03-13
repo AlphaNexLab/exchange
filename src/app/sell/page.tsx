@@ -22,8 +22,10 @@ import {
   Eye
 } from 'lucide-react';
 import { PAYMENT_METHODS } from '@/lib/constants';
-import { formatCurrency, formatERG } from '@/lib/utils';
+import { formatCurrency, formatANX } from '@/lib/utils';
 import { useWallet } from '@/lib/hooks/useWallet';
+import { createOffer } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -32,15 +34,17 @@ const fadeInUp = {
 };
 
 export default function SellPage() {
-  const { wallet, connect } = useWallet();
+  const router = useRouter();
+  const { wallet, connect, ensureAuth } = useWallet();
   const [formData, setFormData] = useState({
     amount: '',
-    pricePerErg: '',
+    pricePerAnx: '',
     paymentMethod: 'Revolut',
     paymentTag: '',
     verificationConsent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,28 +52,41 @@ export default function SellPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!wallet.connected || !wallet.address) {
+      setSubmitError('Connect your wallet first');
+      return;
+    }
     setIsSubmitting(true);
-    
-    // Mock submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    alert('Offer created successfully! Your ERG has been locked in escrow.');
-    setIsSubmitting(false);
-    setFormData({
-      amount: '',
-      pricePerErg: '',
-      paymentMethod: 'Revolut',
-      paymentTag: '',
-      verificationConsent: false
-    });
+    setSubmitError(null);
+    try {
+      await ensureAuth();
+      await createOffer({
+        amountEth: formData.amount,
+        pricePerEth: Number(formData.pricePerAnx),
+        method: formData.paymentMethod as 'Revolut' | 'Wise' | 'PayPal',
+        tag: formData.paymentTag,
+      });
+      setFormData({
+        amount: '',
+        pricePerAnx: '',
+        paymentMethod: 'Revolut',
+        paymentTag: '',
+        verificationConsent: false
+      });
+      router.push('/exchange/');
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to create offer');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const totalValue = formData.amount && formData.pricePerErg 
-    ? Number(formData.amount) * Number(formData.pricePerErg)
+  const totalValue = formData.amount && formData.pricePerAnx 
+    ? Number(formData.amount) * Number(formData.pricePerAnx)
     : 0;
 
   const isFormValid = formData.amount && 
-                     formData.pricePerErg && 
+                     formData.pricePerAnx && 
                      formData.paymentTag && 
                      formData.verificationConsent &&
                      wallet.connected;
@@ -87,10 +104,10 @@ export default function SellPage() {
         {/* Header */}
         <motion.div className="text-center mb-12" {...fadeInUp}>
           <h1 className="text-5xl font-frontier font-bold mb-4 bg-gradient-to-r from-slate-50 to-amber-300 bg-clip-text text-transparent tracking-wider">
-            SELL YOUR ERG
+            SELL YOUR ANX
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            List your ERG for sale and earn from direct peer-to-peer trades secured by smart contracts
+            List your ANX for sale and earn from direct peer-to-peer trades secured by smart contracts
           </p>
         </motion.div>
 
@@ -106,13 +123,13 @@ export default function SellPage() {
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <AlertTriangle className="w-5 h-5 text-amber-400" />
-                  <span className="text-amber-300">Connect your wallet to start selling ERG</span>
+                  <span className="text-amber-300">Connect your wallet to start selling ANX</span>
                 </div>
                 <Button 
                   variant="amber" 
                   size="sm"
                   onClick={connect}
-                  className="text-space-900 hover:bg-amber-600"
+                  className="text-white hover:bg-amber-600"
                 >
                   Connect Wallet
                 </Button>
@@ -134,10 +151,10 @@ export default function SellPage() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* ERG Amount */}
+                    {/* ANX Amount */}
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Amount of ERG to sell *
+                        Amount of ANX to sell *
                       </label>
                       <div className="relative">
                         <Input
@@ -152,26 +169,29 @@ export default function SellPage() {
                           className="text-lg pr-16"
                         />
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
-                          ERG
+                          ANX
                         </div>
                       </div>
                       {wallet.connected && (
                         <p className="text-sm text-slate-400 mt-1">
-                          Wallet balance: {wallet.balance} ERG
+                          Wallet balance: {wallet.balance} {wallet.symbol || 'ANX'}
                         </p>
                       )}
+                      {submitError ? (
+                        <p className="text-sm text-red-400 mt-2">{submitError}</p>
+                      ) : null}
                     </div>
 
-                    {/* Price per ERG */}
+                    {/* Price per ANX */}
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Price per ERG (USD) *
+                        Price per ANX (USD) *
                       </label>
                       <div className="relative">
                         <Input
                           type="number"
-                          value={formData.pricePerErg}
-                          onChange={(e) => handleInputChange('pricePerErg', e.target.value)}
+                          value={formData.pricePerAnx}
+                          onChange={(e) => handleInputChange('pricePerAnx', e.target.value)}
                           placeholder="1.85"
                           min="0.01"
                           step="0.01"
@@ -228,7 +248,7 @@ export default function SellPage() {
                     </div>
 
                     {/* Verification Consent */}
-                    <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg">
+                    <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg">
                       <div className="flex items-start gap-3">
                         <input
                           type="checkbox"
@@ -236,13 +256,13 @@ export default function SellPage() {
                           checked={formData.verificationConsent}
                           onChange={(e) => handleInputChange('verificationConsent', e.target.checked)}
                           disabled={!wallet.connected}
-                          className="mt-1 w-4 h-4 text-blue-600 bg-navy-700 border-gray-600 rounded focus:ring-blue-500"
+                          className="mt-1 w-4 h-4 text-amber-600 bg-navy-700 border-gray-600 rounded focus:ring-amber-500"
                         />
                         <div>
-                          <label htmlFor="verificationConsent" className="text-sm font-medium text-blue-300 cursor-pointer">
+                          <label htmlFor="verificationConsent" className="text-sm font-medium text-amber-300 cursor-pointer">
                             I grant our verification network access to confirm received payments *
                           </label>
-                          <p className="text-xs text-blue-200/80 mt-1">
+                          <p className="text-xs text-amber-200/80 mt-1">
                             This allows verifiers to confirm when payments are received, ensuring secure trades.
                             Only transaction verification data is accessed, not personal information.
                           </p>
@@ -256,12 +276,12 @@ export default function SellPage() {
                         <h4 className="font-medium mb-3">Offer Summary</h4>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">ERG Amount:</span>
-                            <span className="font-mono">{formatERG(Number(formData.amount))}</span>
+                            <span className="text-gray-400">ANX Amount:</span>
+                            <span className="font-mono">{formatANX(Number(formData.amount))}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Price per ERG:</span>
-                            <span className="font-mono">{formatCurrency(Number(formData.pricePerErg))}</span>
+                            <span className="text-gray-400">Price per ANX:</span>
+                            <span className="font-mono">{formatCurrency(Number(formData.pricePerAnx))}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-400">Payment Method:</span>
@@ -283,7 +303,7 @@ export default function SellPage() {
                       disabled={!isFormValid || isSubmitting}
                       loading={isSubmitting}
                     >
-                      {isSubmitting ? 'Locking ERG in Escrow...' : 'Create Offer & Lock ERG'}
+                      {isSubmitting ? 'Creating offer...' : 'Create Offer'}
                     </Button>
 
                     {!wallet.connected && (
@@ -308,25 +328,25 @@ export default function SellPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Info className="w-5 h-5 text-blue-400" />
+                    <Info className="w-5 h-5 text-amber-400" />
                     How Selling Works
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                       1
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Lock ERG in Escrow</p>
+                      <p className="text-sm font-medium">Lock ANX in Escrow</p>
                       <p className="text-xs text-gray-400 mt-1">
-                        Your ERG is secured by a smart contract until payment is verified
+                        Your ANX is secured by a smart contract until payment is verified
                       </p>
                     </div>
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                       2
                     </div>
                     <div>
@@ -338,7 +358,7 @@ export default function SellPage() {
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                       3
                     </div>
                     <div>
@@ -356,7 +376,7 @@ export default function SellPage() {
                     <div>
                       <p className="text-sm font-medium">Payment Verification</p>
                       <p className="text-xs text-gray-400 mt-1">
-                        Verifiers confirm payment and release ERG to buyer
+                        Verifiers confirm payment and release ANX to buyer
                       </p>
                     </div>
                   </div>
@@ -410,7 +430,7 @@ export default function SellPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-blue-400" />
+                    <TrendingUp className="w-5 h-5 text-amber-400" />
                     Market Overview
                   </CardTitle>
                 </CardHeader>
@@ -432,7 +452,7 @@ export default function SellPage() {
                   
                   <div className="flex justify-between">
                     <span className="text-gray-400 text-sm">24h Volume:</span>
-                    <span className="font-bold">47,392 ERG</span>
+                    <span className="font-bold">47,392 ANX</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
@@ -452,20 +472,20 @@ export default function SellPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
             >
-              <Card className="bg-blue-500/5 border-blue-500/20">
+              <Card className="bg-amber-500/5 border-amber-500/20">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-blue-400" />
+                    <Shield className="w-5 h-5 text-amber-400" />
                     About Verification
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-blue-200/80">
+                  <p className="text-sm text-amber-200/80">
                     Our verification network uses independent verifiers to cryptographically 
                     confirm payments were received — no trust required.
                   </p>
                   
-                  <p className="text-sm text-blue-200/80">
+                  <p className="text-sm text-amber-200/80">
                     Your financial privacy is protected — verifiers only confirm transaction 
                     status, not account details or balances.
                   </p>
@@ -473,7 +493,7 @@ export default function SellPage() {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="w-full border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                    className="w-full border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
                     onClick={() => window.open('/how-it-works#verification', '_blank')}
                   >
                     Learn More

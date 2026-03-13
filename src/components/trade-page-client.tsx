@@ -1,559 +1,710 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Navigation } from '@/components/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { 
-  ArrowLeft, 
-  Star, 
-  Clock, 
-  Shield, 
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { parseEther } from "viem";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { Navigation } from "@/components/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  ArrowLeft,
+  Clock,
+  Shield,
   CheckCircle,
   ExternalLink,
   Copy,
   AlertTriangle,
-  Loader
-} from 'lucide-react';
-import { MOCK_OFFERS, EXPLORER_TX } from '@/lib/constants';
-import { formatCurrency, formatERG, truncateAddress, calculateTotal } from '@/lib/utils';
-import { useWallet } from '@/lib/hooks/useWallet';
+  Loader,
+} from "lucide-react";
+import { formatCurrency, truncateAddress, calculateTotal } from "@/lib/utils";
+import { useWallet } from "@/lib/hooks/useWallet";
+import {
+  createTrade,
+  fetchOffer,
+  fetchTrade,
+  markTradeFunded,
+  markTradePaid,
+  type ApiOffer,
+  type ApiTrade,
+} from "@/lib/api";
+import { AuthRequiredError } from "@/lib/auth";
+import {
+  ESCROW_ADDRESS,
+  isEscrowConfigured,
+  p2pEscrowAbi,
+} from "@/lib/contracts";
 
-type TradeStep = 'amount' | 'payment' | 'paid' | 'verification' | 'success';
+type UiStep =
+  | "loading"
+  | "amount"
+  | "awaiting_fund"
+  | "payment"
+  | "awaiting_release"
+  | "success"
+  | "error";
 
-interface VerifierNode {
-  id: number;
-  name: string;
-  status: 'pending' | 'verified' | 'failed';
+const ETHERSCAN_TX = "https://sepolia.etherscan.io/tx/";
+
+function stepFromTradeStatus(status: string): UiStep {
+  switch (status) {
+    case "open":
+      return "awaiting_fund";
+    case "funded":
+      return "payment";
+    case "paid":
+      return "awaiting_release";
+    case "released":
+      return "success";
+    case "refunded":
+      return "error";
+    default:
+      return "error";
+  }
 }
 
 export default function TradePageClient() {
-  const params = useParams();
   const router = useRouter();
-  const { wallet } = useWallet();
-  const [currentStep, setCurrentStep] = useState<TradeStep>('amount');
+  const searchParams = useSearchParams();
+  const offerId = searchParams.get("offerId") || "";
+  const tradeIdParam = searchParams.get("tradeId") || "";
+  const { wallet, connect, ensureAuth, isAuthenticated } = useWallet();
+
+  const [offer, setOffer] = useState<ApiOffer | null>(null);
+  const [trade, setTrade] = useState<ApiTrade | null>(null);
   const [amount, setAmount] = useState<number>(0);
-  const [countdown, setCountdown] = useState(1800); // 30 minutes
-  const [verifiers, setVerifiers] = useState<VerifierNode[]>([
-    { id: 1, name: 'Verifier 1', status: 'pending' },
-    { id: 2, name: 'Verifier 2', status: 'pending' },
-    { id: 3, name: 'Verifier 3', status: 'pending' },
-    { id: 4, name: 'Verifier 4', status: 'pending' },
-    { id: 5, name: 'Verifier 5', status: 'pending' },
-  ]);
-  const [mockTxHash] = useState('f7a8b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0');
+  const [step, setStep] = useState<UiStep>("loading");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
-  const offer = MOCK_OFFERS.find(o => o.id === params.id);
+  const { writeContractAsync, data: fundTxHash } = useWriteContract();
+  const { isSuccess: fundConfirmed } = useWaitForTransactionReceipt({
+    hash: fundTxHash,
+  });
 
+  const tradeLink = useMemo(() => {
+    if (!trade?.id || typeof window === "undefined") return "";
+    return `${window.location.origin}/trade/?tradeId=${encodeURIComponent(trade.id)}`;
+  }, [trade?.id]);
+
+  // Load by tradeId (resume) or offerId (new)
   useEffect(() => {
-    if (currentStep === 'payment' && countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentStep, countdown]);
+    let cancelled = false;
 
-  useEffect(() => {
-    if (currentStep === 'verification') {
-      let verified = 0;
-      const verifyNode = () => {
-        if (verified < 3) {
-          setVerifiers(prev => {
-            const newVerifiers = [...prev];
-            const pendingIndex = newVerifiers.findIndex(v => v.status === 'pending');
-            if (pendingIndex !== -1) {
-              newVerifiers[pendingIndex].status = 'verified';
-            }
-            return newVerifiers;
-          });
-          verified++;
-          if (verified < 3) {
-            setTimeout(verifyNode, 2000);
-          } else {
-            setTimeout(() => setCurrentStep('success'), 1000);
+    (async () => {
+      setStep("loading");
+      setError(null);
+
+      if (tradeIdParam) {
+        try {
+          if (!wallet.connected) {
+            setError("Connect your wallet to open this trade");
+            setStep("error");
+            return;
           }
+          await ensureAuth();
+          const t = await fetchTrade(tradeIdParam);
+          if (cancelled) return;
+          setTrade(t);
+          try {
+            const o = await fetchOffer(t.offerId);
+            if (!cancelled) {
+              setOffer(o);
+              setAmount(Number(t.amountEth));
+            }
+          } catch {
+            if (!cancelled) {
+              setOffer({
+                id: t.offerId,
+                seller: t.seller,
+                amount: Number(t.amountEth),
+                amountEth: t.amountEth,
+                pricePerAnx: t.pricePerEth,
+                pricePerEth: t.pricePerEth,
+                method: t.method as ApiOffer["method"],
+                tag: t.tag,
+                rating: 0,
+                trades: 0,
+                status: "reserved",
+              });
+              setAmount(Number(t.amountEth));
+            }
+          }
+          if (t.status === "refunded") {
+            setError("Trade was refunded");
+          }
+          setStep(stepFromTradeStatus(t.status));
+        } catch (e) {
+          if (cancelled) return;
+          if (e instanceof AuthRequiredError) {
+            setError("Sign in with your wallet to open this trade");
+          } else {
+            setError(e instanceof Error ? e.message : "Trade not found");
+          }
+          setStep("error");
         }
-      };
-      setTimeout(verifyNode, 1000);
-    }
-  }, [currentStep]);
+        return;
+      }
 
-  if (!offer) {
+      if (!offerId) {
+        setError("Missing offerId or tradeId");
+        setStep("error");
+        return;
+      }
+
+      try {
+        const o = await fetchOffer(offerId);
+        if (cancelled) return;
+        setOffer(o);
+        setAmount(o.amount);
+        setStep("amount");
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : "Offer not found");
+          setStep("error");
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // Re-run when tradeId/offerId change or wallet connects for resume
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradeIdParam, offerId, wallet.connected, isAuthenticated]);
+
+  // Poll trade while waiting for fund / release
+  useEffect(() => {
+    if (!trade?.id) return;
+    if (
+      step !== "awaiting_fund" &&
+      step !== "awaiting_release" &&
+      step !== "payment"
+    ) {
+      return;
+    }
+
+    const tick = async () => {
+      try {
+        await ensureAuth();
+        const t = await fetchTrade(trade.id);
+        setTrade(t);
+        if (t.status === "funded" && step === "awaiting_fund") {
+          setStep("payment");
+        }
+        if (t.status === "released") {
+          setStep("success");
+        }
+        if (t.status === "refunded") {
+          setError("Trade was refunded");
+          setStep("error");
+        }
+      } catch {
+        /* ignore transient poll errors */
+      }
+    };
+
+    tick();
+    const id = setInterval(tick, 4000);
+    return () => clearInterval(id);
+  }, [trade?.id, step, ensureAuth]);
+
+  // After on-chain fund confirms, notify API
+  useEffect(() => {
+    if (!fundConfirmed || !fundTxHash || !trade) return;
+    if (trade.status !== "open") return;
+
+    (async () => {
+      try {
+        await ensureAuth();
+        const updated = await markTradeFunded(trade.id, fundTxHash);
+        setTrade(updated);
+        setStep("payment");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to mark funded");
+      } finally {
+        setBusy(false);
+      }
+    })();
+  }, [fundConfirmed, fundTxHash, trade, ensureAuth]);
+
+  const total = useMemo(() => {
+    if (!offer && !trade) return 0;
+    const amt = amount || Number(trade?.amountEth || offer?.amount || 0);
+    const price = trade?.pricePerEth ?? offer?.pricePerEth ?? 0;
+    return calculateTotal(amt, price);
+  }, [amount, offer, trade]);
+
+  const isSeller =
+    !!wallet.address &&
+    !!trade &&
+    wallet.address.toLowerCase() === trade.seller.toLowerCase();
+  const isBuyer =
+    !!wallet.address &&
+    !!trade &&
+    wallet.address.toLowerCase() === trade.buyer.toLowerCase();
+
+  const startTrade = async () => {
+    if (!wallet.connected || !wallet.address) {
+      await connect();
+      return;
+    }
+    if (!offer) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await ensureAuth();
+      const t = await createTrade({
+        offerId: offer.id,
+        amountEth: amount || offer.amount,
+      });
+      setTrade(t);
+      setStep("awaiting_fund");
+      router.replace(`/trade/?tradeId=${encodeURIComponent(t.id)}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to open trade");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const fundEscrow = useCallback(async () => {
+    if (!trade) return;
+    if (!isEscrowConfigured()) {
+      setBusy(true);
+      try {
+        await ensureAuth();
+        const fake =
+          "0x" +
+          Array.from({ length: 64 }, () =>
+            Math.floor(Math.random() * 16).toString(16)
+          ).join("");
+        const updated = await markTradeFunded(trade.id, fake);
+        setTrade(updated);
+        setStep("payment");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to mark funded");
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+
+    setBusy(true);
+    setError(null);
+    try {
+      await ensureAuth();
+      const deadline = trade.deadline
+        ? BigInt(Math.floor(new Date(trade.deadline).getTime() / 1000))
+        : BigInt(Math.floor(Date.now() / 1000) + 1800);
+
+      await writeContractAsync({
+        address: ESCROW_ADDRESS,
+        abi: p2pEscrowAbi,
+        functionName: "createTrade",
+        args: [
+          trade.onChainTradeId as `0x${string}`,
+          trade.buyer as `0x${string}`,
+          deadline,
+        ],
+        value: parseEther(trade.amountEth),
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Escrow funding failed");
+      setBusy(false);
+    }
+  }, [trade, writeContractAsync, ensureAuth]);
+
+  const confirmPaid = async () => {
+    if (!trade) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await ensureAuth();
+      const updated = await markTradePaid(trade.id);
+      setTrade(updated);
+      setStep("awaiting_release");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to mark paid");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const copyTradeLink = async () => {
+    if (!tradeLink) return;
+    await copyToClipboard(tradeLink);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
+  if (step === "loading") {
     return (
       <div className="min-h-screen">
         <Navigation />
-        <div className="max-w-4xl mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Offer Not Found</h1>
-          <Button onClick={() => router.push('/exchange')}>
-            Back to Exchange
-          </Button>
+        <div className="flex justify-center py-20 text-slate-400 gap-2">
+          <Loader className="w-5 h-5 animate-spin" />
+          {tradeIdParam ? "Loading trade…" : "Loading offer…"}
         </div>
       </div>
     );
   }
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  if (step === "error" && !offer && !trade) {
+    return (
+      <div className="min-h-screen">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Trade unavailable</h1>
+          <p className="text-slate-400 mb-6">{error || "Not found"}</p>
+          {tradeIdParam && !wallet.connected ? (
+            <Button onClick={() => connect()} className="mb-3">
+              Connect Wallet
+            </Button>
+          ) : null}
+          <div>
+            <Button variant="outline" onClick={() => router.push("/exchange/")}>
+              Back to Exchange
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
-
-  const total = calculateTotal(amount || offer.amount, offer.pricePerErg);
-
-  const StepIndicator = () => (
-    <div className="flex items-center justify-center mb-8">
-      {['amount', 'payment', 'paid', 'verification', 'success'].map((step, index) => {
-        const stepIndex = ['amount', 'payment', 'paid', 'verification', 'success'].indexOf(currentStep);
-        const isActive = index === stepIndex;
-        const isCompleted = index < stepIndex;
-        
-        return (
-          <React.Fragment key={step}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-              isCompleted ? 'bg-emerald-500 text-white' :
-              isActive ? 'bg-electric-500 text-white' :
-              'bg-slate-700 text-slate-400'
-            }`}>
-              {isCompleted ? <CheckCircle className="w-5 h-5" /> : index + 1}
-            </div>
-            {index < 4 && (
-              <div className={`w-16 h-0.5 mx-2 ${
-                isCompleted ? 'bg-emerald-500' : 'bg-slate-700'
-              }`} />
-            )}
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
+  const sellerLabel = offer?.seller || trade?.seller || "";
 
   return (
     <div className="min-h-screen">
       <Navigation />
-      
+
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
+        <div className="flex items-center gap-4 mb-8 flex-wrap">
+          <Button
+            variant="ghost"
             size="sm"
-            onClick={() => router.push('/exchange')}
+            onClick={() => router.push("/exchange/")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Exchange
           </Button>
-          <h1 className="text-2xl font-bold">Buy ERG from {truncateAddress(offer.seller)}</h1>
+          <h1 className="text-2xl font-bold">
+            {trade
+              ? `Trade with ${truncateAddress(sellerLabel)}`
+              : `Buy ANX from ${truncateAddress(sellerLabel)}`}
+          </h1>
+          {trade ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyTradeLink}
+              className="ml-auto flex items-center gap-2"
+            >
+              <Copy className="w-4 h-4" />
+              {linkCopied ? "Copied!" : "Copy trade link"}
+            </Button>
+          ) : null}
         </div>
 
-        <StepIndicator />
+        {error && (
+          <Card className="mb-6 bg-red-500/10 border-red-500/30">
+            <CardContent className="p-4 text-red-300 text-sm">{error}</CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {currentStep === 'amount' && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Select Amount</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">
-                        Amount of ERG to buy
-                      </label>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          value={amount || offer.amount}
-                          onChange={(e) => setAmount(Number(e.target.value))}
-                          max={offer.amount}
-                          min={1}
-                          className="text-lg"
-                        />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                          ERG
-                        </div>
-                      </div>
-                      <p className="text-sm text-slate-400 mt-1">
-                        Available: {formatERG(offer.amount)}
-                      </p>
-                    </div>
+          <div className="lg:col-span-2 space-y-6">
+            {step === "amount" && offer && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Select Amount</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Amount of ANX to buy
+                    </label>
+                    <Input
+                      type="number"
+                      value={amount || offer.amount}
+                      onChange={(e) => setAmount(Number(e.target.value))}
+                      max={offer.amount}
+                      min={0.0001}
+                      step="any"
+                      className="text-lg"
+                    />
+                    <p className="text-sm text-slate-400 mt-1">
+                      Available: {offer.amountEth} ANX
+                    </p>
+                  </div>
 
-                    <div className="bg-space-700/30 p-4 rounded-lg space-y-2">
-                      <div className="flex justify-between">
-                        <span>Subtotal:</span>
-                        <span>{formatCurrency((amount || offer.amount) * offer.pricePerErg)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-slate-400">
-                        <span>Network fee (1%):</span>
-                        <span>{formatCurrency((amount || offer.amount) * offer.pricePerErg * 0.01)}</span>
-                      </div>
-                      <hr className="border-slate-600" />
-                      <div className="flex justify-between text-lg font-bold">
-                        <span>Total:</span>
-                        <span className="text-emerald-400">{formatCurrency(total)}</span>
-                      </div>
+                  <div className="bg-space-700/30 p-4 rounded-lg space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>
+                        {formatCurrency(
+                          (amount || offer.amount) * offer.pricePerEth
+                        )}
+                      </span>
                     </div>
+                    <div className="flex justify-between text-sm text-slate-400">
+                      <span>Network fee (1%):</span>
+                      <span>
+                        {formatCurrency(
+                          (amount || offer.amount) * offer.pricePerEth * 0.01
+                        )}
+                      </span>
+                    </div>
+                    <hr className="border-slate-600" />
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total fiat:</span>
+                      <span className="text-emerald-400">
+                        {formatCurrency(total)}
+                      </span>
+                    </div>
+                  </div>
 
-                    <Button
-                      className="w-full"
-                      onClick={() => setCurrentStep('payment')}
-                      disabled={!amount && !offer.amount}
-                    >
-                      Continue to Payment
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  <Button
+                    className="w-full"
+                    onClick={startTrade}
+                    disabled={busy || !(amount || offer.amount)}
+                    loading={busy}
+                  >
+                    {wallet.connected ? "Open Trade" : "Connect Wallet"}
+                  </Button>
+                </CardContent>
+              </Card>
             )}
 
-            {currentStep === 'payment' && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-emerald-400" />
-                      Payment Instructions
-                      <Badge variant="emerald" className="ml-auto">
-                        {formatTime(countdown)}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-lg">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-amber-300 mb-1">
-                            Payment Timeout: 30 minutes
-                          </p>
-                          <p className="text-amber-200/80 text-sm">
-                            Complete your payment within 30 minutes or this trade will be cancelled.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">
-                        Send {formatCurrency(total)} to:
-                      </label>
-                      <div className="bg-space-700/50 p-4 rounded-lg border border-slate-600">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-lg">{offer.tag}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(offer.tag)}
-                          >
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        <p className="text-slate-400 text-sm mt-1">
-                          Payment method: {offer.method}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-medium">Payment Instructions:</h4>
-                      <ol className="list-decimal list-inside space-y-2 text-sm text-slate-300">
-                        <li>Open your {offer.method} app</li>
-                        <li>Send exactly {formatCurrency(total)} to {offer.tag}</li>
-                        <li>Add reference: "ERG-{offer.id.toUpperCase()}"</li>
-                        <li>Complete the payment</li>
-                        <li>Return here and click "I've Paid"</li>
-                      </ol>
-                    </div>
-
-                    <Button
-                      className="w-full"
-                      onClick={() => setCurrentStep('paid')}
-                    >
-                      I've Sent the Payment
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-
-            {currentStep === 'paid' && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Payment Confirmation</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="bg-electric-500/10 border border-electric-500/30 p-4 rounded-lg">
-                      <div className="flex items-start gap-3">
-                        <Shield className="w-5 h-5 text-electric-400 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-electric-300 mb-1">
-                            Payment Received Confirmation
-                          </p>
-                          <p className="text-electric-200/80 text-sm">
-                            Please confirm that you have sent the payment. Our verification network will 
-                            confirm the transaction before releasing your ERG.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-space-700/30 p-4 rounded-lg">
-                      <h4 className="font-medium mb-3">Payment Summary:</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Amount sent:</span>
-                          <span>{formatCurrency(total)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">To:</span>
-                          <span className="font-mono">{offer.tag}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Method:</span>
-                          <span>{offer.method}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Reference:</span>
-                          <span className="font-mono">ERG-{offer.id.toUpperCase()}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      className="w-full"
-                      onClick={() => setCurrentStep('verification')}
-                    >
-                      Yes, I've Paid
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-
-            {currentStep === 'verification' && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Loader className="w-5 h-5 animate-spin text-electric-400" />
-                      Frontier Verification
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="bg-electric-500/10 border border-electric-500/30 p-4 rounded-lg">
-                      <p className="text-electric-300 text-sm">
-                        Our verification network is confirming your payment. This process typically takes 2-5 minutes.
-                        3 out of 5 verifiers need to confirm the payment for ERG to be released.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h4 className="font-medium">Verification Progress:</h4>
-                      {verifiers.map((verifier) => (
-                        <motion.div
-                          key={verifier.id}
-                          className="flex items-center justify-between p-3 bg-space-700/30 rounded-lg"
-                          initial={{ opacity: 0.5 }}
-                          animate={{ 
-                            opacity: verifier.status === 'verified' ? 1 : 0.7,
-                            scale: verifier.status === 'verified' ? 1.02 : 1
-                          }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <span className="text-sm">{verifier.name}</span>
-                          <div className="flex items-center gap-2">
-                            {verifier.status === 'pending' && (
-                              <Loader className="w-4 h-4 animate-spin text-slate-400" />
-                            )}
-                            {verifier.status === 'verified' && (
-                              <CheckCircle className="w-4 h-4 text-emerald-400" />
-                            )}
-                            <Badge variant={
-                              verifier.status === 'verified' ? 'verified' :
-                              verifier.status === 'failed' ? 'destructive' :
-                              'pending'
-                            }>
-                              {verifier.status}
-                            </Badge>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    <div className="text-center text-slate-400">
-                      <p>Verified: {verifiers.filter(v => v.status === 'verified').length}/3 required</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-
-            {currentStep === 'success' && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="border-emerald-500/50 bg-emerald-500/5">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-emerald-400">
-                      <CheckCircle className="w-6 h-6" />
-                      Trade Completed Successfully!
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="text-center py-8">
-                      <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-10 h-10 text-emerald-400" />
-                      </div>
-                      <h3 className="text-2xl font-bold mb-2">
-                        {formatERG(amount || offer.amount)} sent to your wallet!
-                      </h3>
-                      <p className="text-slate-400">
-                        Your ERG has been successfully transferred. The transaction is now complete.
-                      </p>
-                    </div>
-
-                    <div className="bg-space-700/30 p-4 rounded-lg">
-                      <h4 className="font-medium mb-3">Transaction Details:</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">ERG Received:</span>
-                          <span className="text-emerald-400 font-bold">
-                            {formatERG(amount || offer.amount)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Total Paid:</span>
-                          <span>{formatCurrency(total)}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-slate-400">Transaction Hash:</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs">
-                              {truncateAddress(mockTxHash, 8)}
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copyToClipboard(mockTxHash)}
-                            >
-                              <Copy className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => window.open(`${EXPLORER_TX}${mockTxHash}`, '_blank')}
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button
-                        className="flex-1"
-                        onClick={() => router.push('/exchange')}
+            {step === "awaiting_fund" && trade && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-amber-400" />
+                    Escrow funding
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-slate-300 text-sm">
+                    Seller must lock <strong>{trade.amountEth} ANX</strong> in
+                    the escrow contract before fiat payment.
+                  </p>
+                  <p className="text-xs text-slate-500 font-mono break-all">
+                    Trade ID: {trade.id}
+                    <br />
+                    On-chain ID: {trade.onChainTradeId}
+                  </p>
+                  {tradeLink ? (
+                    <p className="text-xs text-slate-400">
+                      Share this link with the other party so they can resume:{" "}
+                      <button
+                        type="button"
+                        onClick={copyTradeLink}
+                        className="text-amber-300 underline"
                       >
-                        Trade Again
-                      </Button>
+                        copy link
+                      </button>
+                    </p>
+                  ) : null}
+
+                  {isSeller ? (
+                    <Button
+                      className="w-full"
+                      onClick={fundEscrow}
+                      disabled={busy}
+                      loading={busy}
+                    >
+                      {isEscrowConfigured()
+                        ? "Fund Escrow (createTrade)"
+                        : "Mark Funded (demo — no contract address)"}
+                    </Button>
+                  ) : (
+                    <div className="flex items-center gap-2 text-slate-400 text-sm">
+                      <Loader className="w-4 h-4 animate-spin" />
+                      Waiting for seller to fund escrow…
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {step === "payment" && trade && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-emerald-400" />
+                    Payment Instructions
+                    <Badge variant="emerald" className="ml-auto">
+                      Funded
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-amber-200/80 text-sm">
+                        Send fiat to the seller, then mark paid. A verifier
+                        releases escrowed ANX to your wallet.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Send {formatCurrency(total)} to:
+                    </label>
+                    <div className="bg-space-700/50 p-4 rounded-lg border border-slate-600 flex items-center justify-between">
+                      <span className="font-mono text-lg">{trade.tag}</span>
                       <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => window.open(`${EXPLORER_TX}${mockTxHash}`, '_blank')}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(trade.tag)}
                       >
-                        View on Explorer
+                        <Copy className="w-4 h-4" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                    <p className="text-slate-400 text-sm mt-1">
+                      Payment method: {trade.method}
+                    </p>
+                  </div>
+
+                  {isBuyer ? (
+                    <Button
+                      className="w-full"
+                      onClick={confirmPaid}
+                      disabled={busy}
+                      loading={busy}
+                    >
+                      I&apos;ve Sent the Payment
+                    </Button>
+                  ) : (
+                    <p className="text-sm text-slate-400">
+                      Waiting for buyer to confirm fiat payment…
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {step === "awaiting_release" && trade && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Awaiting verifier</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <Loader className="w-5 h-5 animate-spin text-amber-400" />
+                    Payment marked. Verifier will call release on-chain.
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Admin:{" "}
+                    <code className="text-slate-400">
+                      POST /admin/trades/{trade.id}/verify
+                    </code>{" "}
+                    with header{" "}
+                    <code className="text-slate-400">x-verifier-key</code>
+                  </p>
+                  {trade.releaseTxHash && (
+                    <a
+                      href={`${ETHERSCAN_TX}${trade.releaseTxHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-amber-300"
+                    >
+                      View release tx <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {step === "success" && trade && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-emerald-400">
+                    <CheckCircle className="w-5 h-5" />
+                    Trade complete
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-slate-300">
+                    Escrow released {trade.amountEth} ANX to the buyer.
+                  </p>
+                  {trade.releaseTxHash &&
+                    !trade.releaseTxHash.startsWith("0xmock") && (
+                      <a
+                        href={`${ETHERSCAN_TX}${trade.releaseTxHash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-amber-300"
+                      >
+                        View on Etherscan <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  <Button onClick={() => router.push("/exchange/")}>
+                    Back to Exchange
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {step === "error" && trade && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Trade closed</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-slate-400">{error || "This trade ended."}</p>
+                  <Button onClick={() => router.push("/exchange/")}>
+                    Back to Exchange
+                  </Button>
+                </CardContent>
+              </Card>
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-8">
+          <div>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Seller Information</CardTitle>
+                <CardTitle className="text-base">Trade summary</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Address:</span>
-                  <Badge variant="address" className="font-mono">
-                    {truncateAddress(offer.seller)}
-                  </Badge>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Seller</span>
+                  <span>{truncateAddress(sellerLabel)}</span>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Rating:</span>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-current text-amber-400" />
-                    <span className="font-bold">{offer.rating}</span>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Price</span>
+                  <span>
+                    {formatCurrency(
+                      trade?.pricePerEth ?? offer?.pricePerEth ?? 0
+                    )}{" "}
+                    / ANX
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Method</span>
+                  <span>{trade?.method || offer?.method}</span>
+                </div>
+                {trade && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Status</span>
+                    <Badge variant="outline">{trade.status}</Badge>
                   </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Trades:</span>
-                  <span className="font-bold">{offer.trades}</span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Method:</span>
-                  <Badge variant={
-                    offer.method === 'Revolut' ? 'revolut' :
-                    offer.method === 'Wise' ? 'wise' :
-                    offer.method === 'PayPal' ? 'paypal' : 'secondary'
-                  }>
-                    {offer.method}
-                  </Badge>
-                </div>
-                
-                <hr className="border-slate-700" />
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Price per ERG:</span>
-                    <span className="font-bold">{formatCurrency(offer.pricePerErg)}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Available:</span>
-                    <span className="font-bold">{formatERG(offer.amount)}</span>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
