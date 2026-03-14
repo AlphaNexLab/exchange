@@ -26,7 +26,21 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+
+# API data store
+/data/
+
+# leftover nested installs
+/server/node_modules/
+/server/package-lock.json
+
+# contracts build
+/contracts/cache/
+/contracts/artifacts/
+/contracts/typechain-types/
+/contracts/node_modules/
 
 # vercel
 .vercel

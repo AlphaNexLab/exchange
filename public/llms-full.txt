@@ -1,13 +1,13 @@
-# Ergo Frontier Exchange — Full Documentation
+# AlphaNex Exchange — Full Documentation
 
 > Decentralized peer-to-peer ERG exchange. Trade ERG for fiat (USD/EUR) directly with other users, secured by Ergo smart contract escrow and an independent verification network. No KYC, no middleman, 1% fee.
 
 ## Overview
 
-Ergo Frontier Exchange is a decentralized peer-to-peer platform for trading ERG (Ergo cryptocurrency) for fiat currencies. It eliminates the need for centralized exchanges by using Ergo blockchain smart contracts as escrow and a decentralized verification network to confirm fiat payments. The platform charges only a 1% network fee and requires no KYC or registration — users simply connect their Nautilus wallet.
+AlphaNex Exchange is a decentralized peer-to-peer platform for trading ERG (Ergo cryptocurrency) for fiat currencies. It eliminates the need for centralized exchanges by using Ergo blockchain smart contracts as escrow and a decentralized verification network to confirm fiat payments. The platform charges only a 1% network fee and requires no KYC or registration — users simply connect their Nautilus wallet.
 
-Website: https://ergo-frontier-exchange.pages.dev
-GitHub: https://github.com/ergo-frontier/exchange
+Website: https://alphanex.exchange
+GitHub: https://github.com/alphanex/exchange
 
 ---
 

@@ -73,12 +73,12 @@ export default function HomePage() {
     {
       icon: Shield,
       title: "Trustless Escrow",
-      description: "Smart contracts hold ERG until payment is verified by independent verifiers"
+      description: "Smart contracts hold ANX until payment is verified by independent verifiers"
     },
     {
       icon: Zap,
       title: "Instant Trading",
-      description: "Connect wallet, pick offer, pay seller, get ERG. Simple as that."
+      description: "Connect wallet, pick offer, pay seller, get ANX. Simple as that."
     },
     {
       icon: Users,
@@ -93,10 +93,10 @@ export default function HomePage() {
   ];
 
   const steps = [
-    { number: 1, title: "Connect Wallet", description: "Link your Nautilus wallet" },
-    { number: 2, title: "Choose Offer", description: "Browse ERG sellers" },
+    { number: 1, title: "Connect Wallet", description: "Link MetaMask, Rabby, Phantom, or any EVM wallet" },
+    { number: 2, title: "Choose Offer", description: "Browse ANX sellers" },
     { number: 3, title: "Send Payment", description: "Pay via Revolut/Wise" },
-    { number: 4, title: "Get ERG", description: "Verification complete, ERG sent to your wallet" }
+    { number: 4, title: "Get ANX", description: "Verification complete, ANX sent to your wallet" }
   ];
 
   return (
@@ -112,8 +112,8 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-6xl md:text-8xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-teal-300 bg-clip-text text-transparent tracking-tight leading-none">
-                TRADE ERG.
+              <h1 className="text-6xl md:text-8xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-amber-500 bg-clip-text text-transparent tracking-tight leading-none">
+                TRADE ANX.
                 <br />
                 <span className="text-amber-400">PEER TO PEER.</span>
                 <br />
@@ -122,7 +122,7 @@ export default function HomePage() {
               
               <p className="text-xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
                 The frontier of decentralized exchange.
-                Trade ERG for fiat directly with sellers, secured by smart contracts.
+                Trade ANX for fiat directly with sellers, secured by smart contracts.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -206,7 +206,7 @@ export default function HomePage() {
               className="text-center mb-16"
               {...fadeInUp}
             >
-              <h2 className="text-5xl font-frontier font-bold mb-4 tracking-wider">WHY CHOOSE ERGO FRONTIER?</h2>
+              <h2 className="text-5xl font-frontier font-bold mb-4 tracking-wider">WHY CHOOSE ALPHANEX?</h2>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
                 Experience the frontier of cryptocurrency trading with our secure, decentralized platform
               </p>
@@ -249,7 +249,7 @@ export default function HomePage() {
             >
               <h2 className="text-4xl font-bold mb-4">Trading Made Simple</h2>
               <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Four steps to get ERG in your wallet. No registration, no KYC, no hassle.
+                Four steps to get ANX in your wallet. No registration, no KYC, no hassle.
               </p>
             </motion.div>
 
@@ -262,7 +262,7 @@ export default function HomePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.2, duration: 0.6 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center mx-auto mb-4 text-space-900 font-bold text-xl shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-copper-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl shadow-lg">
                     {step.number}
                   </div>
                   <h3 className="text-xl font-frontier font-bold mb-2 tracking-wide">{step.title}</h3>
@@ -292,7 +292,7 @@ export default function HomePage() {
                 <CardContent className="space-y-6">
                   <h2 className="text-4xl font-frontier font-bold tracking-wider">READY TO START TRADING?</h2>
                   <p className="text-xl text-slate-300">
-                    Join the frontier revolution. Trade ERG securely with real pioneers.
+                    Join AlphaNex Exchange. Trade securely with real pioneers.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <Link href="/exchange">

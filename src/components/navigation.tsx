@@ -22,15 +22,26 @@ import {
 import { cn } from '@/lib/utils';
 import { useWallet } from '@/lib/hooks/useWallet';
 import { formatAddress } from '@/lib/wallet';
-import { EXPLORER_ADDR } from '@/lib/constants';
+import { getEvmAddressExplorer } from '@/lib/constants';
+import { ConnectWalletModal } from '@/components/connect-wallet-modal';
+import { Logo } from '@/components/logo';
 
-interface NavigationProps {}
-
-export function Navigation({}: NavigationProps = {}) {
+export function Navigation() {
   const pathname = usePathname();
-  const { wallet, isConnecting, error, connect, disconnect, refreshBalance, isNautilusAvailable } = useWallet();
+  const {
+    wallet,
+    isConnecting,
+    error,
+    connect,
+    disconnect,
+    refreshBalance,
+    isWalletAvailable,
+    chainId,
+    connectorName,
+    symbol,
+  } = useWallet();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [errorDismissed, setErrorDismissed] = useState(false);
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
@@ -40,44 +51,50 @@ export function Navigation({}: NavigationProps = {}) {
     { href: '/nodes', label: 'Nodes', icon: Server },
   ];
 
+  const normalizedPath =
+    pathname !== '/' && pathname.endsWith('/')
+      ? pathname.slice(0, -1)
+      : pathname;
+
+  const isNavActive = (href: string) => {
+    if (href === '/') return normalizedPath === '/';
+    return (
+      normalizedPath === href || normalizedPath.startsWith(`${href}/`)
+    );
+  };
+
   const handleConnect = async () => {
-    setShowError(false);
+    setErrorDismissed(false);
     await connect();
   };
 
   const copyAddress = async () => {
     if (wallet.address) {
       await navigator.clipboard.writeText(wallet.address);
-      // Could show a toast here
     }
   };
 
   const openExplorer = () => {
     if (wallet.address) {
-      window.open(`${EXPLORER_ADDR}${wallet.address}`, '_blank');
+      window.open(getEvmAddressExplorer(chainId, wallet.address), '_blank');
     }
   };
+
+  const balanceLabel = `${wallet.balance} ${wallet.symbol || symbol || 'ANX'}`;
 
   return (
     <>
       <nav className="border-b border-slate-700/30 bg-space-800/60 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-copper-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300">
-                <span className="text-space-900 font-bold text-sm">★</span>
-              </div>
-              <span className="text-xl font-frontier font-bold text-slate-50 tracking-wider group-hover:text-amber-300 transition-colors">
-                ERGO FRONTIER
-              </span>
+            <Link href="/" className="group">
+              <Logo size="md" />
             </Link>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = pathname === item.href;
+                const isActive = isNavActive(item.href);
                 return (
                   <Link
                     key={item.href}
@@ -96,12 +113,11 @@ export function Navigation({}: NavigationProps = {}) {
               })}
             </div>
 
-            {/* Wallet Section */}
             <div className="flex items-center space-x-3">
               {!wallet.connected ? (
                 <Button
                   onClick={handleConnect}
-                  variant={isNautilusAvailable ? "invite" : "default"}
+                  variant={isWalletAvailable ? "invite" : "default"}
                   disabled={isConnecting}
                   loading={isConnecting}
                   className="flex items-center space-x-2"
@@ -124,20 +140,26 @@ export function Navigation({}: NavigationProps = {}) {
                         {formatAddress(wallet.address)}
                       </span>
                       <span className="text-xs opacity-90">
-                        {wallet.balance} ERG
+                        {balanceLabel}
                       </span>
                     </div>
                     <span className="sm:hidden font-bold">
-                      {wallet.balance} ERG
+                      {balanceLabel}
                     </span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
 
-                  {/* Wallet Dropdown */}
                   {showDropdown && (
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-space-800/95 backdrop-blur-lg border border-slate-700/50 rounded-xl shadow-2xl z-50">
+                    <div className="absolute right-0 top-full mt-2 w-72 bg-space-800/95 backdrop-blur-lg border border-slate-700/50 rounded-xl shadow-2xl z-50">
                       <div className="p-4 border-b border-slate-700/50">
-                        <div className="text-sm text-slate-400 mb-1">Wallet Address</div>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="text-sm text-slate-400">Wallet Address</div>
+                          {connectorName ? (
+                            <Badge variant="outline" className="text-[10px]">
+                              {connectorName}
+                            </Badge>
+                          ) : null}
+                        </div>
                         <div className="font-mono text-xs text-slate-300 break-all">
                           {wallet.address}
                         </div>
@@ -145,7 +167,7 @@ export function Navigation({}: NavigationProps = {}) {
                           <div>
                             <div className="text-sm text-slate-400">Balance</div>
                             <div className="text-lg font-bold text-emerald-400">
-                              {wallet.balance} ERG
+                              {balanceLabel}
                             </div>
                           </div>
                           <Badge variant="verified" className="text-xs">
@@ -199,12 +221,11 @@ export function Navigation({}: NavigationProps = {}) {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
           <div className="md:hidden pb-4 pt-2">
             <div className="flex items-center justify-around">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = pathname === item.href;
+                const isActive = isNavActive(item.href);
                 return (
                   <Link
                     key={item.href}
@@ -212,8 +233,8 @@ export function Navigation({}: NavigationProps = {}) {
                     className={cn(
                       "flex flex-col items-center space-y-1 p-2 rounded-lg text-xs font-medium transition-all",
                       isActive
-                        ? "text-amber-300 bg-amber-500/10"
-                        : "text-slate-400 hover:text-amber-300"
+                        ? "text-amber-300 bg-amber-500/10 border border-amber-500/20"
+                        : "text-slate-400 hover:text-amber-300 border border-transparent"
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -226,35 +247,25 @@ export function Navigation({}: NavigationProps = {}) {
         </div>
       </nav>
 
-      {/* Error Toast */}
-      {error && !showError && (
+      <ConnectWalletModal />
+
+      {error && !errorDismissed && !wallet.connected ? (
         <div className="fixed top-20 right-4 bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-xl shadow-lg backdrop-blur-sm z-50 max-w-sm">
           <div className="flex items-start space-x-3">
             <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium">{error}</p>
-              {error.includes('nautilus.io') && (
-                <a 
-                  href="https://nautilus.io" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs text-red-200 hover:text-red-100 underline mt-1 block"
-                >
-                  Download Nautilus Wallet →
-                </a>
-              )}
             </div>
             <button
-              onClick={() => setShowError(true)}
+              onClick={() => setErrorDismissed(true)}
               className="text-red-400 hover:text-red-300 text-xs"
             >
               ×
             </button>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {/* Click outside to close dropdown */}
       {showDropdown && (
         <div
           className="fixed inset-0 z-40"

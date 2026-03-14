@@ -1,15 +1,13 @@
-# Ergo Frontier Exchange
+# AlphaNex Exchange
 
-**Trade ERG. Peer to Peer. Trustless.**
+**Trade peer to peer. Trustless.**
 
-The first decentralized P2P ERG/fiat exchange with cryptographic payment verification. No exchange. No middleman. Just math.
-
-![Ergo Frontier Exchange](https://ergofrontier.com/preview.png)
+A decentralized P2P exchange with cryptographic payment verification. No middleman. Just math.
 
 ## 🚀 Features
 
-- **Trustless Trading**: Smart contract escrow ensures secure P2P ERG trades
-- **Real Wallet Integration**: Connect your Nautilus wallet and see your real ERG balance
+- **Trustless Trading**: Smart contract escrow ensures secure P2P ANX trades
+- **Real Wallet Integration**: Connect your Nautilus wallet and see your real ANX balance
 - **Decentralized Verification**: Independent verifiers cryptographically confirm fiat payments
 - **Multiple Payment Methods**: Support for Revolut, Wise, and PayPal
 - **Zero KYC**: No registration, no personal data, just connect and trade
@@ -17,7 +15,6 @@ The first decentralized P2P ERG/fiat exchange with cryptographic payment verific
 
 ## 🛠 Tech Stack
 
-- **Svelte** based on https://github.com/ergo-basics/template
 - **Tailwind CSS** for stunning responsive design
 - **Framer Motion** for smooth animations (if is compatible with svelte)
 - **shadcn/ui** components
@@ -42,17 +39,17 @@ P.D: But i love the navy blue too ...
 1. **Connect Wallet** → Link your Nautilus wallet
 2. **Pick Offer** → Browse verified sellers in the order book
 3. **Send Payment** → Pay seller via Revolut/Wise/PayPal
-4. **Get ERG** → Verification network confirms payment, ERG sent to your wallet
+4. **Get ANX** → Verification network confirms payment, ANX sent to your wallet
 
 ### For Sellers:
-1. **List ERG** → Set amount, price, and payment method
-2. **Lock in Escrow** → Smart contract secures your ERG
+1. **List ANX** → Set amount, price, and payment method
+2. **Lock in Escrow** → Smart contract secures your ANX
 3. **Receive Orders** → Buyers send fiat directly to you
-4. **Auto Release** → Verification confirms payment, ERG released automatically
+4. **Auto Release** → Verification confirms payment, ANX released automatically
 
 ## 🔐 Security
 
-- **Smart Contract Escrow**: ERG locked until payment cryptographically verified
+- **Smart Contract Escrow**: ANX locked until payment cryptographically verified
 - **Distributed Verification**: 5 independent verifiers, 3/5 consensus required
 - **Privacy Preserved**: Verifiers see transaction confirmation only, not account details
 - **No Single Point of Failure**: Fully decentralized, unstoppable protocol
@@ -67,10 +64,6 @@ P.D: But i love the navy blue too ...
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/ergo-frontier/exchange.git
-cd exchange
-
 # Install dependencies
 npm install
 
@@ -81,16 +74,14 @@ npm run dev
 npm run build
 ```
 
-### Nautilus Wallet Integration
+### Wallet + SIWE auth
 
-The app integrates with real Nautilus wallets:
+The app uses EVM wallets (MetaMask, Rabby, etc. via wagmi) and **SIWE** sessions for API auth:
 
-- **Install Nautilus**: Download from [nautilus.io](https://nautilus.io)
-- **Connect**: Click "Connect Wallet" to link your real ERG wallet
-- **See Balance**: View your actual ERG balance and address
-- **Trading**: Currently mock (secure P2P protocol coming soon)
-
-Without Nautilus installed, the app gracefully degrades with helpful instructions.
+- **Connect**: Pick a browser wallet, then sign the login message
+- **Session**: API calls use `Authorization: Bearer <session token>` (not a spoofable address)
+- **Trades**: Open from Exchange; resume via `/trade/?tradeId=…`
+- See [docs/local-dev.md](docs/local-dev.md) for fund checks and verifier steps
 
 ## 📁 Project Structure
 
@@ -113,12 +104,12 @@ src/
 
 ## 🎭 Mock Data vs Real Integration
 
-**Current Status**: Beautiful, fully functional UI with real wallet connection
+**Current Status**: Demo MVP with SIWE auth, JSON order book, optional Sepolia escrow
 
-- ✅ **Real**: Nautilus wallet connection, live ERG balances
-- ✅ **Real**: Explorer links, transaction formatting
-- 🔄 **Mock**: Order book, trading flow, payment verification
-- 🔄 **Coming**: Live order book, smart contract integration
+- ✅ **Real**: EVM wallet + SIWE sessions, offer/trade API, trade resume links
+- ✅ **Real** (when configured): on-chain escrow fund checks + verifier release
+- 🔄 **Mock / manual**: fiat payment verification (buyer self-attests; admin verifies)
+- 🔄 **Label**: UI says ANX; escrow/balance are native ETH on the configured chain
 
 ## 🌐 Deployment
 
@@ -141,11 +132,10 @@ No environment variables needed - everything is client-side!
 ## 🎨 Design System
 
 ### Colors
-- **Primary**: Deep space navy (`#0a0e1a`) with noise texture
-- **Electric**: Brilliant blue (`#3b82f6`) for CTAs and focus states
-- **Amber**: Warm gold (`#f59e0b`) honoring Ergo's heritage
-- **Success**: Emerald green (`#10b981`) for confirmations
-- **Text**: Crisp whites and muted slates
+- **Primary brand**: Violet (`#7342DC`) for CTAs, accents, and focus states
+- **Background**: Deep space (`#0d0a07`) with noise texture
+- **Success**: Emerald green (`#22c55e`) for confirmations
+- **Text**: Warm whites and muted slates
 
 ### Typography
 - **Primary**: Inter for clean, modern readability
@@ -173,26 +163,14 @@ We welcome contributions! Please:
 - **ESLint/Prettier** for formatting
 - **Semantic** component names
 
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🔗 Links
-
-- **Website**: [ergofrontier.com](https://ergofrontier.com)
-- **Ergo Platform**: [ergoplatform.org](https://ergoplatform.org)
-- **Nautilus Wallet**: [nautilus.io](https://nautilus.io)
-- **Explorer**: [sigmaspace.io](https://sigmaspace.io)
-
 ## 🙏 Acknowledgments
 
-- **Ergo Platform** for the brilliant UTXO blockchain
-- **Nautilus Team** for the excellent wallet
 - **shadcn/ui** for beautiful component primitives
 - **Framer Motion** for buttery smooth animations
+- **wagmi / viem** for EVM wallet connectivity
 
 ---
 
-**Built with ❤️ by the Ergo Frontier team**
+**Built by the AlphaNex team**
 
 *Unstoppable. Decentralized. Yours.*

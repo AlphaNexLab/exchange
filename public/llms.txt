@@ -1,43 +1,39 @@
-# Ergo Frontier Exchange
+# AlphaNex Exchange
 
-> Decentralized peer-to-peer ERG exchange. Trade ERG for fiat (USD/EUR) directly with other users, secured by Ergo smart contract escrow and an independent verification network. No KYC, no middleman, 1% fee.
+> Decentralized peer-to-peer exchange. Trade crypto for fiat directly with other users, secured by smart contract escrow and an independent verification network. No KYC, no middleman, 1% fee.
 
-The Ergo Frontier Exchange enables trustless peer-to-peer trading of ERG (Ergo cryptocurrency) for fiat currency. Sellers lock ERG in smart contract escrow, buyers send fiat payment via Revolut/Wise/PayPal, and a decentralized verification network of independent verifiers confirms payment receipt before releasing funds. The platform also offers a Celaut Nodo program where users can earn ERG by sharing compute resources on the decentralized AI network.
+The AlphaNex Exchange enables trustless peer-to-peer trading. Sellers lock funds in smart contract escrow, buyers send fiat payment via Revolut/Wise/PayPal, and a verification network confirms payment receipt before releasing funds.
 
 ## Key Links
 
-- Website: https://ergo-frontier-exchange.pages.dev
-- Exchange: https://ergo-frontier-exchange.pages.dev/exchange
-- Sell ERG: https://ergo-frontier-exchange.pages.dev/sell
-- How It Works: https://ergo-frontier-exchange.pages.dev/how-it-works
-- Run a Node: https://ergo-frontier-exchange.pages.dev/nodes
-- GitHub: https://github.com/ergo-frontier/exchange
+- Website: https://alphanex.exchange
+- Exchange: https://alphanex.exchange/exchange
+- Sell: https://alphanex.exchange/sell
+- How It Works: https://alphanex.exchange/how-it-works
+- Run a Node: https://alphanex.exchange/nodes
 
 ## Core Features
 
-- **P2P ERG Trading**: Buy and sell ERG directly with other users using fiat payment methods (Revolut, Wise, PayPal)
-- **Smart Contract Escrow**: ERG is locked in Ergo blockchain smart contracts until payment is cryptographically verified
-- **Verification Network**: 5 independent verifiers per trade, 3/5 consensus required to release funds
-- **No KYC**: Connect your Nautilus wallet and start trading — no registration, no identity verification
-- **Low Fees**: Only 1% network fee covering smart contract execution and verifier rewards
-- **Celaut Nodo Compute**: Earn ERG passively by running a Celaut Nodo and sharing CPU/RAM on the decentralized compute network
+- **P2P Trading**: Buy and sell directly with other users using fiat payment methods (Revolut, Wise, PayPal)
+- **Smart Contract Escrow**: Funds are locked until payment is verified
+- **Verification Network**: Independent verifiers confirm payment before release
+- **No KYC**: Connect an EVM wallet (MetaMask, Rabby, Phantom, and others) and start trading
+- **Low Fees**: Only 1% network fee
 
 ## How Trading Works
 
-1. Connect your Nautilus wallet
+1. Connect your EVM wallet
 2. Browse verified seller offers on the exchange
 3. Send fiat payment to seller via Revolut/Wise/PayPal
-4. Verification network confirms payment (2-5 minutes)
-5. Smart contract releases ERG to your wallet
+4. Verification network confirms payment
+5. Smart contract releases funds to your wallet
 
 ## Technology
 
 - Built with Next.js 14, TypeScript, Tailwind CSS
-- Deployed on Cloudflare Pages
-- Ergo blockchain smart contracts (ErgoScript)
-- Nautilus wallet integration
-- Decentralized verification network with cryptographic proofs
+- EVM wallets via wagmi / viem
+- Fastify API + Solidity P2PEscrow (Sepolia)
 
 ## Optional: llms-full.txt
 
-- [llms-full.txt](https://ergo-frontier-exchange.pages.dev/llms-full.txt): Detailed documentation of all pages, features, and the Celaut Nodo compute program
+- [llms-full.txt](/llms-full.txt): Detailed documentation of pages and features

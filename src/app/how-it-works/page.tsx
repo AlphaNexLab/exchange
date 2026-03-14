@@ -39,14 +39,14 @@ export default function HowItWorksPage() {
     {
       icon: Wallet,
       title: "Connect Wallet",
-      description: "Link your Nautilus wallet to start trading",
-      details: "Your wallet holds your ERG and receives purchased tokens. No registration or KYC required."
+      description: "Link MetaMask, Rabby, Phantom, or any EVM wallet",
+      details: "Connect with browser or mobile EVM wallets. No registration or KYC required."
     },
     {
       icon: Eye,
       title: "Browse Offers",
       description: "Find verified sellers with competitive rates",
-      details: "All sellers are rated by the community and their ERG is locked in smart contract escrow."
+      details: "All sellers are rated by the community and their ANX is locked in smart contract escrow."
     },
     {
       icon: DollarSign,
@@ -62,9 +62,9 @@ export default function HowItWorksPage() {
     },
     {
       icon: CheckCircle,
-      title: "Receive ERG",
-      description: "ERG is automatically sent to your wallet",
-      details: "Once payment is verified, the smart contract releases ERG directly to your wallet."
+      title: "Receive ANX",
+      description: "ANX is automatically sent to your wallet",
+      details: "Once payment is verified, the smart contract releases ANX directly to your wallet."
     }
   ];
 
@@ -72,7 +72,7 @@ export default function HowItWorksPage() {
     {
       icon: Lock,
       title: "Smart Contract Escrow",
-      description: "ERG is locked in Ergo smart contracts until payment verification",
+      description: "ANX is locked in smart contracts until payment verification",
       benefits: ["Trustless trading", "No counterparty risk", "Automated execution"]
     },
     {
@@ -96,11 +96,11 @@ export default function HowItWorksPage() {
     },
     {
       question: "What happens if a seller doesn't receive payment?",
-      answer: "If judges cannot verify payment within the time window, the ERG is returned to the seller and the trade is cancelled. The escrow smart contract ensures no funds are lost."
+      answer: "If judges cannot verify payment within the time window, the ANX is returned to the seller and the trade is cancelled. The escrow smart contract ensures no funds are lost."
     },
     {
       question: "How long does verification take?",
-      answer: "Verification typically takes 2-5 minutes. Verifiers need to reach 3/5 consensus to release the ERG."
+      answer: "Verification typically takes 2-5 minutes. Verifiers need to reach 3/5 consensus to release the ANX."
     },
     {
       question: "What payment methods are supported?",
@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
     },
     {
       question: "Do I need to provide ID or KYC?",
-      answer: "No KYC required. Simply connect your Nautilus wallet to start trading. Ergo Frontier is fully decentralized and permissionless."
+      answer: "No KYC required. Simply connect an EVM wallet (MetaMask, Rabby, Phantom, WalletConnect, and others) to start trading. AlphaNex Exchange is fully decentralized and permissionless."
     }
   ];
 
@@ -123,11 +123,11 @@ export default function HowItWorksPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div className="text-center mb-16" {...fadeInUp}>
-          <h1 className="text-5xl md:text-6xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-teal-300 bg-clip-text text-transparent tracking-wider">
+          <h1 className="text-5xl md:text-6xl font-frontier font-bold mb-6 bg-gradient-to-r from-slate-50 via-amber-300 to-amber-500 bg-clip-text text-transparent tracking-wider">
             HOW IT WORKS
           </h1>
           <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-            Ergo Frontier enables secure peer-to-peer ERG trading using smart contracts 
+            AlphaNex Exchange enables secure peer-to-peer trading using smart contracts 
             and the Verification Network. Here's how the frontier works.
           </p>
         </motion.div>
@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
           <motion.div className="text-center mb-12" {...fadeInUp}>
             <h2 className="text-3xl font-bold mb-4">Trading Flow</h2>
             <p className="text-lg text-gray-400">
-              Five simple steps to buy ERG directly from sellers
+              Five simple steps to buy ANX directly from sellers
             </p>
           </motion.div>
 
@@ -151,15 +151,15 @@ export default function HowItWorksPage() {
               const Icon = step.icon;
               return (
                 <motion.div key={index} variants={fadeInUp}>
-                  <Card className="overflow-hidden hover:border-blue-500/50 transition-all duration-300">
+                  <Card className="overflow-hidden hover:border-amber-500/50 transition-all duration-300">
                     <CardContent className="p-8">
                       <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                         <div className="flex items-center gap-4 flex-shrink-0">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                             {index + 1}
                           </div>
-                          <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center">
-                            <Icon className="w-8 h-8 text-blue-400" />
+                          <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center">
+                            <Icon className="w-8 h-8 text-amber-400" />
                           </div>
                         </div>
                         
@@ -231,10 +231,10 @@ export default function HowItWorksPage() {
         {/* Verification Deep Dive */}
         <section className="mb-20" id="verification">
           <motion.div {...fadeInUp}>
-            <Card className="bg-gradient-to-br from-blue-500/5 to-emerald-500/5 border-blue-500/20">
+            <Card className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-amber-500/20">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl flex items-center justify-center gap-3">
-                  <Shield className="w-8 h-8 text-blue-400" />
+                  <Shield className="w-8 h-8 text-amber-400" />
                   Verification Network Explained
                 </CardTitle>
               </CardHeader>
@@ -247,8 +247,8 @@ export default function HowItWorksPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Key className="w-5 h-5 text-blue-400" />
+                      <div className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Key className="w-5 h-5 text-amber-400" />
                       </div>
                       <div>
                         <h4 className="font-semibold mb-2">Cryptographic Verification</h4>
@@ -267,7 +267,7 @@ export default function HowItWorksPage() {
                         <h4 className="font-semibold mb-2">Decentralized Consensus</h4>
                         <p className="text-sm text-gray-400">
                           5 independent verifiers evaluate each trade. 3 out of 5 must agree 
-                          before ERG is released from escrow.
+                          before ANX is released from escrow.
                         </p>
                       </div>
                     </div>
@@ -337,7 +337,7 @@ export default function HowItWorksPage() {
           <motion.div className="text-center mb-12" {...fadeInUp}>
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
             <p className="text-lg text-gray-400">
-              Get answers to common questions about Ergo Frontier
+              Get answers to common questions about AlphaNex Exchange
             </p>
           </motion.div>
 
@@ -351,7 +351,7 @@ export default function HowItWorksPage() {
               <motion.div key={index} variants={fadeInUp}>
                 <Card className="hover:border-gray-600 transition-colors">
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-3 text-blue-300">
+                    <h3 className="text-lg font-semibold mb-3 text-amber-300">
                       {item.question}
                     </h3>
                     <p className="text-gray-400 leading-relaxed">
