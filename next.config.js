@@ -44,6 +44,8 @@ const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/\/$/, "");
 const nextConfig = {
   output: "export",
   trailingSlash: true,
+  // Each route has a .jsx and a .tsx file. Only the TypeScript pages are routes.
+  pageExtensions: ["ts", "tsx"],
   distDir: process.env.NEXT_DIST_DIR || ".next",
 
   ...(assetPrefix ? { assetPrefix } : {}),
